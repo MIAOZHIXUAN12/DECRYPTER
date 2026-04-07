@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CIPHER VAULT</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:#0b0f0c;
+  font-family:'Share Tech Mono',monospace;
+  color:#00ff88;
+}
+
+/* CONTAINER */
+.app{
+  max-width:420px;
+  margin:30px auto;
+  border:1px solid #00ff8833;
+  border-radius:12px;
+  overflow:hidden;
+  background:#021b12;
+  box-shadow:0 0 25px #00ff8822;
+}
+
+/* HEADER */
+.header{
+  padding:18px;
+  text-align:center;
+  border-bottom:1px solid #00ff8833;
+}
+.title{
+  font-family:'Orbitron';
+  font-weight:900;
+  letter-spacing:4px;
+}
+.sub{
+  font-size:10px;
+  opacity:0.6;
+}
+
+/* LOGIN */
+.login{
+  padding:20px;
+  text-align:center;
+}
+.pin{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin:15px 0;
+}
+.dot{
+  width:34px;height:34px;
+  border:2px solid #00ff8833;
+  border-radius:50%;
+}
+.dot.fill{background:#00ff8844}
+
+.pad{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.pad button{
+  padding:12px;
+  background:#021b12;
+  border:1px solid #00ff8833;
+  color:#00ff88;
+  cursor:pointer;
+}
+.pad button:hover{background:#00ff8822}
+
+/* MAIN */
+.main{display:none;padding:18px}
+
+.tabs{
+  display:flex;
+  border:1px solid #00ff8833;
+  margin-bottom:12px;
+}
+.tabs button{
+  flex:1;
+  padding:10px;
+  background:transparent;
+  color:#00ff8866;
+  border:none;
+  cursor:pointer;
+}
+.tabs .active{
+  background:#00ff8822;
+  color:#00ff88;
+}
+
+/* INPUT */
+textarea{
+  width:100%;
+  min-height:80px;
+  background:#021b12;
+  border:1px solid #00ff8833;
+  color:#00ff88;
+  padding:10px;
+  margin-top:6px;
+}
+
+.btn{
+  margin-top:10px;
+  width:100%;
+  padding:10px;
+  background:#00ff8822;
+  border:1px solid #00ff88;
+  color:#00ff88;
+  cursor:pointer;
+}
+.btn:hover{background:#00ff8844}
+
+.output{
+  margin-top:10px;
+  padding:10px;
+  border:1px solid #00ff8833;
+  background:#01150e;
+  word-break:break-all;
+}
+
+.copy{
+  margin-top:6px;
+  font-size:11px;
+  cursor:pointer;
+  opacity:0.7;
+}
+
+.count{
+  font-size:10px;
+  opacity:0.6;
+  text-align:right;
+}
+
+/* STATUS */
+.status{
+  margin-top:15px;
+  font-size:10px;
+  opacity:0.5;
+  text-align:center;
+}
+
+/* REFERENCE */
+.ref{
+  margin-top:18px;
+  font-size:10px;
+  max-height:120px;
+  overflow:auto;
+  border-top:1px solid #00ff8833;
+  padding-top:10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="header">
+<div class="title">CIPHER VAULT</div>
+<div class="sub">SECURE TERMINAL</div>
+</div>
+
+<!-- LOGIN -->
+
+<div class="login" id="login">
+<div>ENTER ACCESS CODE</div>
+
+<div class="pin">
+<div class="dot" id="d0"></div>
+<div class="dot" id="d1"></div>
+<div class="dot" id="d2"></div>
+<div class="dot" id="d3"></div>
+</div>
+
+<div class="pad">
+<button onclick="add('1')">1</button>
+<button onclick="add('2')">2</button>
+<button onclick="add('3')">3</button>
+<button onclick="add('4')">4</button>
+<button onclick="add('5')">5</button>
+<button onclick="add('6')">6</button>
+<button onclick="add('7')">7</button>
+<button onclick="add('8')">8</button>
+<button onclick="add('9')">9</button>
+<button onclick="del()">DEL</button>
+<button onclick="add('0')">0</button>
+</div>
+</div>
+
+<!-- MAIN -->
+
+<div class="main" id="main">
+
+<div class="tabs">
+<button id="encTab" class="active" onclick="mode('enc')">ENCRYPT</button>
+<button id="decTab" onclick="mode('dec')">DECRYPT</button>
+</div>
+
+<div id="encBox">
+<textarea id="encIn" placeholder="type message..." oninput="count()"></textarea>
+<div class="count" id="count">0 chars</div>
+<button class="btn" onclick="encrypt()">ENCRYPT</button>
+<div class="output" id="encOut"></div>
+<div class="copy" onclick="copy('encOut')">COPY</div>
+</div>
+
+<div id="decBox" style="display:none">
+<textarea id="decIn" placeholder="paste cipher..."></textarea>
+<button class="btn" onclick="decrypt()">DECRYPT</button>
+<div class="output" id="decOut"></div>
+<div class="copy" onclick="copy('decOut')">COPY</div>
+</div>
+
+<div class="status">SECURE LINK ACTIVE</div>
+
+<div class="ref" id="ref"></div>
+
+</div>
+
+</div>
+
+<script>
+// ✅ FINAL CORRECT CIPHER (MATCHES PDF)
+const cipher={
+A:'10A379E',B:'L3A2T72A',C:'3A7212',D:'061379EF',
+E:'0G100M21',F:'001A379E1',G:'0E02081',H:'NV2A21',
+I:'000SHE21',
+J:'KLM3123',K:'12100KL',L:'13567124',
+M:'12B61EFG',N:'LLW1691',O:'01023Q1',
+P:'LX12H9421',Q:'SW13I2',R:'DG5T24121',
+S:'WS23129',T:'05AL123',U:'V5W1239',
+V:'050EZ139',W:'W0W09E7',X:'ENELI93',
+Y:'LWE014',Z:'EEC001031',
+'0':'EEE006','1':'010Q2E1','2':'3109E1F',
+'3':'390EFE1','4':'2312EEX','5':'FE392F',
+'6':'XEF2ERt','7':'EP90012','8':'E9023I',
+'9':'2291EXE'
+};
+
+// reverse map
+const rev={};
+for(let k in cipher){rev[cipher[k].toUpperCase()]=k}
+
+// LOGIN
+let pin="";
+const PASS="5858";
+
+function add(n){
+if(pin.length<4){pin+=n;update()}
+if(pin.length===4)setTimeout(check,200)
+}
+function del(){pin=pin.slice(0,-1);update()}
+function update(){
+for(let i=0;i<4;i++){
+document.getElementById("d"+i).classList.toggle("fill",i<pin.length)
+}}
+function check(){
+if(pin===PASS){
+document.getElementById("login").style.display="none"
+document.getElementById("main").style.display="block"
+}else{pin="";update()}
+}
+
+// MODE
+function mode(m){
+document.getElementById("encBox").style.display=m==="enc"?"":"none"
+document.getElementById("decBox").style.display=m==="dec"?"":"none"
+document.getElementById("encTab").classList.toggle("active",m==="enc")
+document.getElementById("decTab").classList.toggle("active",m==="dec")
+}
+
+// ENCRYPT
+function encrypt(){
+let txt=document.getElementById("encIn").value.toUpperCase()
+let out=[]
+for(let c of txt){
+if(c===" ") out.push("   ")
+else out.push(cipher[c]||"[?]")
+}
+document.getElementById("encOut").textContent=out.join(" / ")
+}
+
+// DECRYPT
+function decrypt(){
+let txt=document.getElementById("decIn").value.trim().split(/\s*\/\s*/)
+let out=""
+for(let t of txt){
+if(t==="") out+=" "
+else out+=rev[t.toUpperCase()]||"[?]"
+}
+document.getElementById("decOut").textContent=out
+}
+
+// COPY
+function copy(id){
+navigator.clipboard.writeText(document.getElementById(id).textContent)
+}
+
+// COUNT
+function count(){
+let l=document.getElementById("encIn").value.length
+document.getElementById("count").textContent=l+" chars"
+}
+
+// BUILD REF TABLE
+let r=""
+for(let k in cipher){
+r+=k+"="+cipher[k]+" | "
+}
+document.getElementById("ref").textContent=r
+</script>
+
+</body>
+</html>
