@@ -1,322 +1,578 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CIPHER VAULT</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cipher Vault</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-  background:#0b0f0c;
-  font-family:'Share Tech Mono',monospace;
-  color:#00ff88;
-}
-
-/* CONTAINER */
-.app{
-  max-width:420px;
-  margin:30px auto;
-  border:1px solid #00ff8833;
-  border-radius:12px;
-  overflow:hidden;
-  background:#021b12;
-  box-shadow:0 0 25px #00ff8822;
-}
-
-/* HEADER */
-.header{
-  padding:18px;
-  text-align:center;
-  border-bottom:1px solid #00ff8833;
-}
-.title{
-  font-family:'Orbitron';
-  font-weight:900;
-  letter-spacing:4px;
-}
-.sub{
-  font-size:10px;
-  opacity:0.6;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0c12;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
+.shell{font-family:'Inter',sans-serif;background:#0f1117;border-radius:14px;overflow:hidden;min-height:580px;width:100%;max-width:420px}
 
 /* LOGIN */
-.login{
-  padding:20px;
-  text-align:center;
-}
-.pin{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  margin:15px 0;
-}
-.dot{
-  width:34px;height:34px;
-  border:2px solid #00ff8833;
-  border-radius:50%;
-}
-.dot.fill{background:#00ff8844}
-
-.pad{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-}
-.pad button{
-  padding:12px;
-  background:#021b12;
-  border:1px solid #00ff8833;
-  color:#00ff88;
-  cursor:pointer;
-}
-.pad button:hover{background:#00ff8822}
+.login-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:580px;padding:40px 24px}
+.brand-mark{width:48px;height:48px;border-radius:12px;background:#1a1d27;border:1px solid #2a2d3a;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.brand-mark svg{width:22px;height:22px}
+.brand-name{font-size:18px;font-weight:600;color:#e8eaf0;letter-spacing:0.3px;margin-bottom:4px}
+.brand-sub{font-size:12px;color:#4a4f66;letter-spacing:0.5px;margin-bottom:32px}
+.login-card{background:#141720;border:1px solid #1e2130;border-radius:12px;padding:28px;width:100%;max-width:300px}
+.pin-label{font-size:11px;font-weight:500;color:#4a4f66;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;text-align:center}
+.pin-dots{display:flex;gap:12px;justify-content:center;margin-bottom:24px}
+.dot{width:12px;height:12px;border-radius:50%;border:1.5px solid #2a2d3a;background:transparent;transition:all 0.15s}
+.dot.filled{background:#6366f1;border-color:#6366f1}
+.dot.error{background:#ef4444;border-color:#ef4444;animation:sh 0.3s}
+.dot.success{background:#22c55e;border-color:#22c55e}
+.dot.admin-fill{background:#f59e0b;border-color:#f59e0b}
+@keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.nb{padding:13px 8px;border:1px solid #1e2130;border-radius:8px;background:#0f1117;color:#c8cad8;font-family:'Inter',sans-serif;font-size:15px;cursor:pointer;transition:all 0.1s;text-align:center}
+.nb:hover{background:#1a1d27;border-color:#2a2d3a;color:#e8eaf0}
+.nb:active{transform:scale(0.96)}
+.nb.del{color:#4a4f66;font-size:12px}
+.nb.del:hover{color:#ef4444;border-color:#ef4444}
+.err-line{font-size:11px;color:#ef4444;text-align:center;margin-top:14px;height:16px;letter-spacing:0.3px}
+.ok-line{font-size:11px;color:#22c55e;text-align:center;margin-top:14px;height:16px}
+.admin-line{font-size:11px;color:#f59e0b;text-align:center;margin-top:14px;height:16px}
 
 /* MAIN */
-.main{display:none;padding:18px}
+.main-wrap{display:none;flex-direction:column;min-height:580px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #1e2130;background:#0f1117}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.topbar-icon{width:28px;height:28px;border-radius:7px;background:#1a1d27;border:1px solid #2a2d3a;display:flex;align-items:center;justify-content:center}
+.topbar-icon svg{width:13px;height:13px}
+.topbar-title{font-size:14px;font-weight:500;color:#e8eaf0}
+.badge{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;letter-spacing:0.3px}
+.badge-secure{background:#0d1f13;border:1px solid #1a3520;color:#22c55e}
+.badge-admin{background:#1f1500;border:1px solid #3a2800;color:#f59e0b}
+.badge-dot{width:6px;height:6px;border-radius:50%}
+.badge-secure .badge-dot{background:#22c55e}
+.badge-admin .badge-dot{background:#f59e0b}
+.lock-btn{padding:5px 12px;border-radius:6px;background:transparent;border:1px solid #1e2130;color:#4a4f66;font-family:'Inter',sans-serif;font-size:11px;cursor:pointer;transition:all 0.1s}
+.lock-btn:hover{border-color:#2a2d3a;color:#c8cad8}
+.content{padding:20px;flex:1;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+.seg{display:flex;background:#141720;border:1px solid #1e2130;border-radius:8px;overflow:hidden}
+.seg-btn{flex:1;padding:9px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.3px;border:none;background:transparent;color:#4a4f66;cursor:pointer;transition:all 0.15s}
+.seg-btn.on{background:#6366f1;color:#fff}
+.seg-btn.on-admin{background:#f59e0b;color:#0f1117}
+.seg-btn:not(:last-child){border-right:1px solid #1e2130}
+.fl{font-size:11px;font-weight:500;color:#4a4f66;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:6px}
+textarea{width:100%;background:#141720;border:1px solid #1e2130;border-radius:8px;color:#c8cad8;font-family:'JetBrains Mono',monospace;font-size:12px;padding:12px;resize:vertical;min-height:80px;line-height:1.6}
+textarea:focus{outline:none;border-color:#6366f155}
+textarea::placeholder{color:#2a2d3a}
+input[type=text],input[type=password]{width:100%;background:#141720;border:1px solid #1e2130;border-radius:8px;color:#c8cad8;font-family:'JetBrains Mono',monospace;font-size:12px;padding:10px 12px;outline:none;transition:border-color 0.15s}
+input[type=text]:focus,input[type=password]:focus{border-color:#f59e0b55}
+input::placeholder{color:#2a2d3a}
+.run-btn{padding:11px;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;border-radius:8px;transition:all 0.15s;width:100%}
+.run-btn-user{background:#6366f1;color:#fff}
+.run-btn-user:hover{background:#5254cc}
+.run-btn-admin{background:#f59e0b;color:#0f1117}
+.run-btn-admin:hover{background:#d97706}
+.run-btn:active{transform:scale(0.98)}
+.output-box{background:#141720;border:1px solid #1e2130;border-radius:8px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#c8cad8;word-break:break-all;line-height:1.8;min-height:56px}
+.output-box.placeholder{color:#2a2d3a}
+.copy-row{display:flex;justify-content:flex-end;margin-top:4px}
+.copy-btn{padding:5px 12px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;cursor:pointer;background:transparent;color:#4a4f66;border:1px solid #1e2130;border-radius:6px;transition:all 0.1s}
+.copy-btn:hover{color:#c8cad8;border-color:#2a2d3a}
 
-.tabs{
-  display:flex;
-  border:1px solid #00ff8833;
-  margin-bottom:12px;
-}
-.tabs button{
-  flex:1;
-  padding:10px;
-  background:transparent;
-  color:#00ff8866;
-  border:none;
-  cursor:pointer;
-}
-.tabs .active{
-  background:#00ff8822;
-  color:#00ff88;
-}
-
-/* INPUT */
-textarea{
-  width:100%;
-  min-height:80px;
-  background:#021b12;
-  border:1px solid #00ff8833;
-  color:#00ff88;
-  padding:10px;
-  margin-top:6px;
-}
-
-.btn{
-  margin-top:10px;
-  width:100%;
-  padding:10px;
-  background:#00ff8822;
-  border:1px solid #00ff88;
-  color:#00ff88;
-  cursor:pointer;
-}
-.btn:hover{background:#00ff8844}
-
-.output{
-  margin-top:10px;
-  padding:10px;
-  border:1px solid #00ff8833;
-  background:#01150e;
-  word-break:break-all;
-}
-
-.copy{
-  margin-top:6px;
-  font-size:11px;
-  cursor:pointer;
-  opacity:0.7;
-}
-
-.count{
-  font-size:10px;
-  opacity:0.6;
-  text-align:right;
-}
-
-/* STATUS */
-.status{
-  margin-top:15px;
-  font-size:10px;
-  opacity:0.5;
-  text-align:center;
-}
-
-/* REFERENCE */
-.ref{
-  margin-top:18px;
-  font-size:10px;
-  max-height:120px;
-  overflow:auto;
-  border-top:1px solid #00ff8833;
-  padding-top:10px;
-}
+/* ADMIN PANEL */
+.admin-panel{display:none;flex-direction:column;gap:18px}
+.admin-section-title{font-size:11px;font-weight:600;color:#f59e0b;letter-spacing:1px;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid #2a1f00;margin-bottom:2px}
+.cipher-table{width:100%;border-collapse:collapse}
+.cipher-table th{font-size:10px;font-weight:500;color:#4a4f66;letter-spacing:0.8px;text-transform:uppercase;padding:6px 8px;text-align:left;border-bottom:1px solid #1e2130}
+.cipher-table td{font-family:'JetBrains Mono',monospace;font-size:11px;color:#c8cad8;padding:5px 8px;border-bottom:1px solid #1a1d27;vertical-align:middle}
+.cipher-table tr:hover td{background:#141720}
+.cipher-table td:first-child{color:#f59e0b;font-weight:500}
+.cipher-edit{background:transparent;border:none;border-bottom:1px solid #2a2d3a;color:#c8cad8;font-family:'JetBrains Mono',monospace;font-size:11px;width:100%;padding:2px 4px;outline:none}
+.cipher-edit:focus{border-bottom-color:#f59e0b}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat-card{background:#141720;border:1px solid #1e2130;border-radius:8px;padding:12px}
+.stat-val{font-size:20px;font-weight:600;color:#e8eaf0;margin-bottom:2px}
+.stat-val.amber{color:#f59e0b}
+.stat-val.green{color:#22c55e}
+.stat-lbl{font-size:10px;color:#4a4f66;letter-spacing:0.5px}
+.table-wrap{max-height:200px;overflow-y:auto;border-radius:8px;border:1px solid #1e2130}
+.table-wrap::-webkit-scrollbar{width:4px}
+.table-wrap::-webkit-scrollbar-track{background:#0f1117}
+.table-wrap::-webkit-scrollbar-thumb{background:#2a2d3a;border-radius:2px}
+.reset-btn{padding:9px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;background:transparent;color:#ef4444;border:1px solid #3a1a1a;border-radius:8px;transition:all 0.1s;width:100%}
+.reset-btn:hover{background:#1f0a0a}
+.save-btn{padding:9px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;background:#f59e0b;color:#0f1117;border:none;border-radius:8px;transition:all 0.1s;width:100%}
+.save-btn:hover{background:#d97706}
+.inline-row{display:flex;gap:8px;align-items:flex-end}
+.inline-row .run-btn{flex:1}
+.field-group{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.log-table{width:100%;border-collapse:collapse}
+.log-table th{font-size:10px;font-weight:500;color:#4a4f66;letter-spacing:0.8px;text-transform:uppercase;padding:5px 8px;text-align:left;border-bottom:1px solid #1e2130}
+.log-table td{font-family:'JetBrains Mono',monospace;font-size:10px;color:#c8cad8;padding:4px 8px;border-bottom:1px solid #1a1d27}
+.log-table .log-action{color:#6366f1}
+.log-table .log-admin{color:#f59e0b}
+.badge-pill{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:500}
+.pill-user{background:#1a1f3a;color:#6366f1}
+.pill-admin{background:#1f1500;color:#f59e0b}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.info-card{background:#141720;border:1px solid #1e2130;border-radius:8px;padding:10px 12px}
+.info-card .info-lbl{font-size:10px;color:#4a4f66;letter-spacing:0.5px;margin-bottom:4px}
+.info-card .info-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:#c8cad8;word-break:break-all}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;background:#141720;border:1px solid #1e2130;border-radius:8px;padding:10px 14px}
+.toggle-row span{font-size:12px;color:#c8cad8}
+.toggle{position:relative;width:38px;height:20px}
+.toggle input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:#2a2d3a;border-radius:20px;cursor:pointer;transition:.2s}
+.slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#6366f1;border-radius:50%;transition:.2s}
+input:checked+.slider{background:#2a1f00}
+input:checked+.slider:before{background:#f59e0b;transform:translateX(18px)}
+.notice{background:#1f1500;border:1px solid #3a2800;border-radius:8px;padding:10px 12px;font-size:11px;color:#f59e0b;line-height:1.6}
+.green-notice{background:#0d1f13;border:1px solid #1a3520;border-radius:8px;padding:10px 12px;font-size:11px;color:#22c55e;line-height:1.6}
 </style>
-
 </head>
-
 <body>
-
-<div class="app">
-
-<div class="header">
-<div class="title">CIPHER VAULT</div>
-<div class="sub">SECURE TERMINAL</div>
-</div>
+<div class="shell">
 
 <!-- LOGIN -->
-
-<div class="login" id="login">
-<div>ENTER ACCESS CODE</div>
-
-<div class="pin">
-<div class="dot" id="d0"></div>
-<div class="dot" id="d1"></div>
-<div class="dot" id="d2"></div>
-<div class="dot" id="d3"></div>
+<div class="login-wrap" id="login">
+  <div class="brand-mark">
+    <svg viewBox="0 0 22 22" fill="none">
+      <rect x="3" y="10" width="16" height="10" rx="2" stroke="#6366f1" stroke-width="1.5" fill="#6366f111"/>
+      <path d="M7 10V7a4 4 0 0 1 8 0v3" stroke="#6366f1" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="11" cy="15" r="1.5" fill="#6366f1"/>
+      <line x1="11" y1="16.5" x2="11" y2="18.5" stroke="#6366f1" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="brand-name">Cipher Vault</div>
+  <div class="brand-sub" id="login-sub">Enter your PIN to continue</div>
+  <div class="login-card">
+    <div class="pin-label">Access PIN</div>
+    <div class="pin-dots">
+      <div class="dot" id="d0"></div><div class="dot" id="d1"></div>
+      <div class="dot" id="d2"></div><div class="dot" id="d3"></div>
+    </div>
+    <div class="numpad">
+      <button class="nb" onclick="ap('1')">1</button>
+      <button class="nb" onclick="ap('2')">2</button>
+      <button class="nb" onclick="ap('3')">3</button>
+      <button class="nb" onclick="ap('4')">4</button>
+      <button class="nb" onclick="ap('5')">5</button>
+      <button class="nb" onclick="ap('6')">6</button>
+      <button class="nb" onclick="ap('7')">7</button>
+      <button class="nb" onclick="ap('8')">8</button>
+      <button class="nb" onclick="ap('9')">9</button>
+      <button class="nb del" onclick="dp()">&#x232B;</button>
+      <button class="nb" onclick="ap('0')">0</button>
+      <button class="nb" style="opacity:0;pointer-events:none"></button>
+    </div>
+    <div id="msg" class="err-line"></div>
+  </div>
 </div>
 
-<div class="pad">
-<button onclick="add('1')">1</button>
-<button onclick="add('2')">2</button>
-<button onclick="add('3')">3</button>
-<button onclick="add('4')">4</button>
-<button onclick="add('5')">5</button>
-<button onclick="add('6')">6</button>
-<button onclick="add('7')">7</button>
-<button onclick="add('8')">8</button>
-<button onclick="add('9')">9</button>
-<button onclick="del()">DEL</button>
-<button onclick="add('0')">0</button>
+<!-- MAIN APP -->
+<div class="main-wrap" id="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-icon">
+        <svg viewBox="0 0 13 13" fill="none">
+          <rect x="1" y="5" width="11" height="7" rx="1.5" stroke="#6366f1" stroke-width="1.2" fill="#6366f111"/>
+          <path d="M4 5V3.5a2.5 2.5 0 0 1 5 0V5" stroke="#6366f1" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="6.5" cy="8.5" r="1" fill="#6366f1"/>
+        </svg>
+      </div>
+      <span class="topbar-title">Cipher Vault</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div id="status-badge" class="badge badge-secure"><div class="badge-dot"></div><span id="badge-txt">Secure</span></div>
+      <button class="lock-btn" onclick="lockOut()">Lock</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="seg" id="seg-bar">
+      <button class="seg-btn on" id="et" onclick="sm('e')">Encrypt</button>
+      <button class="seg-btn" id="dt" onclick="sm('d')">Decrypt</button>
+      <button class="seg-btn" id="at" onclick="sm('a')" style="display:none">Admin</button>
+    </div>
+
+    <!-- ENCRYPT -->
+    <div id="ep">
+      <div style="margin-bottom:12px"><div class="fl">Message</div><textarea id="ei" placeholder="Type your message here..."></textarea></div>
+      <button class="run-btn run-btn-user" onclick="enc()">Encrypt message</button>
+      <div style="margin-top:14px"><div class="fl">Encrypted output</div>
+        <div class="output-box placeholder" id="eo">Output will appear here</div>
+        <div class="copy-row"><button class="copy-btn" onclick="cp('eo')">Copy</button></div>
+      </div>
+    </div>
+
+    <!-- DECRYPT -->
+    <div id="dp2" style="display:none">
+      <div style="margin-bottom:12px"><div class="fl">Encrypted code</div><textarea id="di" placeholder="Paste the cipher code here..."></textarea></div>
+      <button class="run-btn run-btn-user" onclick="dec()">Decrypt message</button>
+      <div style="margin-top:14px"><div class="fl">Decoded message</div>
+        <div class="output-box placeholder" id="do2">Output will appear here</div>
+        <div class="copy-row"><button class="copy-btn" onclick="cp('do2')">Copy</button></div>
+      </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div class="admin-panel" id="ap2">
+
+      <!-- Overview -->
+      <div>
+        <div class="admin-section-title">Overview</div>
+        <div class="stat-row">
+          <div class="stat-card"><div class="stat-val amber" id="s-chars">36</div><div class="stat-lbl">Cipher chars</div></div>
+          <div class="stat-card"><div class="stat-val amber" id="s-logins">0</div><div class="stat-lbl">Login attempts</div></div>
+          <div class="stat-card"><div class="stat-val amber" id="s-uses">0</div><div class="stat-lbl">Uses this session</div></div>
+        </div>
+      </div>
+
+      <!-- System info -->
+      <div>
+        <div class="admin-section-title">System Info</div>
+        <div class="info-grid">
+          <div class="info-card"><div class="info-lbl">Your IP Address</div><div class="info-val" id="sys-ip">Fetching…</div></div>
+          <div class="info-card"><div class="info-lbl">Browser</div><div class="info-val" id="sys-ua">—</div></div>
+          <div class="info-card"><div class="info-lbl">Platform</div><div class="info-val" id="sys-plat">—</div></div>
+          <div class="info-card"><div class="info-lbl">Session started</div><div class="info-val" id="sys-time">—</div></div>
+          <div class="info-card" style="grid-column:1/-1"><div class="info-lbl">Page URL / Hash</div><div class="info-val" id="sys-url">—</div></div>
+        </div>
+      </div>
+
+      <!-- Change PINs -->
+      <div>
+        <div class="admin-section-title">Access Codes</div>
+        <div class="field-group">
+          <div class="fl">User PIN (currently <span id="show-upin" style="color:#6366f1;font-family:monospace">****</span>)</div>
+          <div class="inline-row">
+            <input type="password" id="new-upin" placeholder="New 4-digit user PIN" maxlength="4">
+            <button class="run-btn run-btn-admin" style="max-width:90px;padding:10px" onclick="changePin('user')">Save</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="fl">Admin PIN (currently <span id="show-apin" style="color:#f59e0b;font-family:monospace">****</span>)</div>
+          <div class="inline-row">
+            <input type="password" id="new-apin" placeholder="New 4-digit admin PIN" maxlength="4">
+            <button class="run-btn run-btn-admin" style="max-width:90px;padding:10px" onclick="changePin('admin')">Save</button>
+          </div>
+        </div>
+        <div class="green-notice" id="pin-notice" style="display:none">✓ PIN updated successfully.</div>
+      </div>
+
+      <!-- Cipher Map Editor -->
+      <div>
+        <div class="admin-section-title">Cipher Map Editor</div>
+        <div class="table-wrap">
+          <table class="cipher-table" id="ctable"></table>
+        </div>
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button class="save-btn" onclick="saveCipherMap()">Save cipher map</button>
+          <button class="reset-btn" style="border-color:#2a2d3a;color:#4a4f66" onclick="resetCipherMap()">Reset to default</button>
+        </div>
+        <div class="green-notice" id="cipher-notice" style="display:none;margin-top:8px">✓ Cipher map saved.</div>
+      </div>
+
+      <!-- Settings toggles -->
+      <div>
+        <div class="admin-section-title">Settings</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="toggle-row">
+            <span>Require PIN on decrypt</span>
+            <label class="toggle"><input type="checkbox" id="tog-pin-decrypt" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Show session log to users</span>
+            <label class="toggle"><input type="checkbox" id="tog-show-log"><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Auto-lock after 5 minutes idle</span>
+            <label class="toggle"><input type="checkbox" id="tog-autolock" checked><span class="slider"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Log -->
+      <div>
+        <div class="admin-section-title">Activity Log</div>
+        <div class="table-wrap">
+          <table class="log-table">
+            <thead><tr><th>Time</th><th>Role</th><th>Action</th></tr></thead>
+            <tbody id="log-body"></tbody>
+          </table>
+        </div>
+        <div style="margin-top:8px">
+          <button class="reset-btn" style="border-color:#2a2d3a;color:#4a4f66" onclick="clearLog()">Clear log</button>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div>
+        <div class="admin-section-title">Danger Zone</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="reset-btn" onclick="clearAll()">Clear all fields &amp; reset session</button>
+          <button class="reset-btn" onclick="factoryReset()">Factory reset (restore all defaults)</button>
+        </div>
+      </div>
+
+    </div><!-- /admin-panel -->
+  </div>
 </div>
-</div>
 
-<!-- MAIN -->
-
-<div class="main" id="main">
-
-<div class="tabs">
-<button id="encTab" class="active" onclick="mode('enc')">ENCRYPT</button>
-<button id="decTab" onclick="mode('dec')">DECRYPT</button>
-</div>
-
-<div id="encBox">
-<textarea id="encIn" placeholder="type message..." oninput="count()"></textarea>
-<div class="count" id="count">0 chars</div>
-<button class="btn" onclick="encrypt()">ENCRYPT</button>
-<div class="output" id="encOut"></div>
-<div class="copy" onclick="copy('encOut')">COPY</div>
-</div>
-
-<div id="decBox" style="display:none">
-<textarea id="decIn" placeholder="paste cipher..."></textarea>
-<button class="btn" onclick="decrypt()">DECRYPT</button>
-<div class="output" id="decOut"></div>
-<div class="copy" onclick="copy('decOut')">COPY</div>
-</div>
-
-<div class="status">SECURE LINK ACTIVE</div>
-
-<div class="ref" id="ref"></div>
-
-</div>
-
-</div>
+</div><!-- /shell -->
 
 <script>
-// ✅ FINAL CORRECT CIPHER (MATCHES PDF)
-const cipher={
-A:'10A379E',B:'L3A2T72A',C:'3A7212',D:'061379EF',
-E:'0G100M21',F:'001A379E1',G:'0E02081',H:'NV2A21',
-I:'000SHE21',
-J:'KLM3123',K:'12100KL',L:'13567124',
-M:'12B61EFG',N:'LLW1691',O:'01023Q1',
-P:'LX12H9421',Q:'SW13I2',R:'DG5T24121',
-S:'WS23129',T:'05AL123',U:'V5W1239',
-V:'050EZ139',W:'W0W09E7',X:'ENELI93',
-Y:'LWE014',Z:'EEC001031',
-'0':'EEE006','1':'010Q2E1','2':'3109E1F',
-'3':'390EFE1','4':'2312EEX','5':'FE392F',
-'6':'XEF2ERt','7':'EP90012','8':'E9023I',
-'9':'2291EXE'
-};
+// ─── State ───────────────────────────────────────────────────────────────────
+const DEFAULT_C = {A:'10A379E',B:'L3A2T72A',C:'3A7212',D:'061379EF',E:'0G100M21',F:'001A379E1',G:'0E02081',H:'NV2A21',I:'000S1+E321',J:'KLM3123',K:'12100KL',L:'13567124',M:'12B61EFG',N:'LLW1691',O:'01023Q1',P:'L0121+9421',Q:'SW13I2',R:'DG5T24121',S:'WS23129',T:'05AL123',U:'V5W1239',V:'050EZ139',W:'W0W09E7',X:'ENELI93',Y:'LWE014',Z:'EEC001031','0':'EEE006','1':'010Q2E1','2':'3109E1F','3':'390EFE1','4':'2312EEX','5':'FE392F','6':'XEF2ERt','7':'EP90012','8':'E9023I','9':'2291EXE'};
 
-// reverse map
-const rev={};
-for(let k in cipher){rev[cipher[k].toUpperCase()]=k}
+let C = {...DEFAULT_C};
+let R = {};
+let PINS = {user:'5858', admin:'1212'};
+let pin='', uses=0, role='', loginAttempts=0;
+let activityLog = [];
+let sessionStart = new Date();
+let idleTimer = null;
+let adminUnlocked = false; // hash-based unlock
 
-// LOGIN
-let pin="";
-const PASS="5858";
+function buildReverse(){R={};for(const[k,v]of Object.entries(C))R[v.toUpperCase()]=k;}
+buildReverse();
 
-function add(n){
-if(pin.length<4){pin+=n;update()}
-if(pin.length===4)setTimeout(check,200)
+// ─── Hash Detection ───────────────────────────────────────────────────────────
+function checkHash(){
+  const h = window.location.hash;
+  adminUnlocked = (h === '#adminpanelyes');
+  if(adminUnlocked){
+    document.getElementById('login-sub').textContent = 'Admin access enabled via URL';
+  }
 }
-function del(){pin=pin.slice(0,-1);update()}
-function update(){
-for(let i=0;i<4;i++){
-document.getElementById("d"+i).classList.toggle("fill",i<pin.length)
-}}
-function check(){
-if(pin===PASS){
-document.getElementById("login").style.display="none"
-document.getElementById("main").style.display="block"
-}else{pin="";update()}
-}
+checkHash();
+window.addEventListener('hashchange', ()=>{
+  checkHash();
+  // If already inside, reflect change live
+  if(role==='admin') updateAdminHashNotice();
+});
 
-// MODE
-function mode(m){
-document.getElementById("encBox").style.display=m==="enc"?"":"none"
-document.getElementById("decBox").style.display=m==="dec"?"":"none"
-document.getElementById("encTab").classList.toggle("active",m==="enc")
-document.getElementById("decTab").classList.toggle("active",m==="dec")
+// ─── Login ────────────────────────────────────────────────────────────────────
+function ap(n){if(pin.length>=4)return;pin+=n;ud();if(pin.length===4)setTimeout(ck,100);}
+function dp(){pin=pin.slice(0,-1);ud();setMsg('');}
+function ud(e,adm){
+  for(let i=0;i<4;i++){
+    const d=document.getElementById('d'+i);
+    d.className='dot';
+    if(i<pin.length){
+      if(e)d.classList.add('error');
+      else if(adm)d.classList.add('admin-fill');
+      else d.classList.add('filled');
+    }
+  }
 }
-
-// ENCRYPT
-function encrypt(){
-let txt=document.getElementById("encIn").value.toUpperCase()
-let out=[]
-for(let c of txt){
-if(c===" ") out.push("   ")
-else out.push(cipher[c]||"[?]")
+function setMsg(t,type){
+  const el=document.getElementById('msg');
+  el.textContent=t;
+  el.className=type==='ok'?'ok-line':type==='admin'?'admin-line':'err-line';
 }
-document.getElementById("encOut").textContent=out.join(" / ")
-}
-
-// DECRYPT
-function decrypt(){
-let txt=document.getElementById("decIn").value.trim().split(/\s*\/\s*/)
-let out=""
-for(let t of txt){
-if(t==="") out+=" "
-else out+=rev[t.toUpperCase()]||"[?]"
-}
-document.getElementById("decOut").textContent=out
+function ck(){
+  loginAttempts++;
+  if(pin===PINS.user){
+    role='user';ud(false,false);
+    for(let i=0;i<4;i++)document.getElementById('d'+i).classList.add('success');
+    setMsg('Access granted','ok');
+    addLog('user','Logged in');
+    setTimeout(enterApp,500);
+  } else if(pin===PINS.admin){
+    role='admin';ud(false,true);
+    setMsg('Admin access granted','admin');
+    addLog('admin','Admin login');
+    setTimeout(enterApp,500);
+  } else {
+    ud(true);setMsg('Incorrect PIN — try again');
+    addLog('—','Failed login attempt');
+    setTimeout(()=>{pin='';ud();setMsg('');},700);
+  }
 }
 
-// COPY
-function copy(id){
-navigator.clipboard.writeText(document.getElementById(id).textContent)
+// ─── App enter/exit ───────────────────────────────────────────────────────────
+function enterApp(){
+  document.getElementById('login').style.display='none';
+  const m=document.getElementById('main');m.style.display='flex';
+  const badge=document.getElementById('status-badge');
+  const btxt=document.getElementById('badge-txt');
+  const atab=document.getElementById('at');
+
+  // Show admin tab only if: role===admin AND hash is #adminpanelyes
+  const showAdmin = role==='admin' && adminUnlocked;
+
+  if(role==='admin'){
+    badge.className='badge badge-admin';
+    btxt.textContent='Admin';
+  } else {
+    badge.className='badge badge-secure';
+    btxt.textContent='Secure';
+  }
+
+  if(showAdmin){
+    atab.style.display='';
+    populateSysInfo();
+    buildTable();
+    refreshStats();
+  } else {
+    atab.style.display='none';
+  }
+  sm('e');
+  resetIdleTimer();
 }
 
-// COUNT
-function count(){
-let l=document.getElementById("encIn").value.length
-document.getElementById("count").textContent=l+" chars"
+function lockOut(){
+  clearTimeout(idleTimer);
+  addLog(role||'—','Locked out');
+  pin='';role='';ud();setMsg('');
+  document.getElementById('main').style.display='none';
+  document.getElementById('login').style.display='flex';
 }
 
-// BUILD REF TABLE
-let r=""
-for(let k in cipher){
-r+=k+"="+cipher[k]+" | "
+// ─── Tabs ─────────────────────────────────────────────────────────────────────
+function sm(m){
+  const tabs={e:'et',d:'dt',a:'at'};
+  const panels={e:'ep',d:'dp2',a:'ap2'};
+  for(const[k,tid] of Object.entries(tabs)){
+    const t=document.getElementById(tid);
+    if(t){t.className='seg-btn';if(k===m)t.classList.add(role==='admin'?'on-admin':'on');}
+  }
+  for(const[k,pid] of Object.entries(panels)){
+    const p=document.getElementById(pid);
+    if(p)p.style.display=k===m?(k==='a'?'flex':'block'):'none';
+  }
 }
-document.getElementById("ref").textContent=r
+
+// ─── Encrypt / Decrypt ────────────────────────────────────────────────────────
+function enc(){
+  const t=document.getElementById('ei').value.toUpperCase();
+  const p=[];for(const ch of t){if(ch===' ')p.push('   ');else if(C[ch])p.push(C[ch]);else p.push('[?]');}
+  const el=document.getElementById('eo');el.textContent=p.join(' / ')||'—';el.classList.remove('placeholder');
+  uses++;refreshStats();addLog(role,'Encrypted message');resetIdleTimer();
+}
+function dec(){
+  const t=document.getElementById('di').value.trim();
+  const tokens=t.split(/\s*\/\s*/);let out='';
+  for(const tok of tokens){const k=tok.trim();if(!k){out+=' ';continue;}out+=R[k.toUpperCase()]||'[?]';}
+  const el=document.getElementById('do2');el.textContent=out||'—';el.classList.remove('placeholder');
+  uses++;refreshStats();addLog(role,'Decrypted message');resetIdleTimer();
+}
+function cp(id){navigator.clipboard.writeText(document.getElementById(id).textContent).catch(()=>{});}
+
+// ─── Admin: Cipher table (editable) ──────────────────────────────────────────
+function buildTable(){
+  const t=document.getElementById('ctable');
+  t.innerHTML='<tr><th>Char</th><th>Cipher code (editable)</th><th>Type</th></tr>';
+  for(const[k,v]of Object.entries(C)){
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${k}</td><td><input class="cipher-edit" data-key="${k}" value="${v}" maxlength="30"></td><td style="color:#4a4f66;font-size:10px">${isNaN(k)?'Letter':'Number'}</td>`;
+    t.appendChild(tr);
+  }
+}
+function saveCipherMap(){
+  document.querySelectorAll('.cipher-edit').forEach(inp=>{
+    const key=inp.dataset.key;
+    const val=inp.value.trim();
+    if(val) C[key]=val;
+  });
+  buildReverse();
+  const n=document.getElementById('cipher-notice');n.style.display='block';setTimeout(()=>n.style.display='none',2000);
+  addLog('admin','Saved cipher map');
+}
+function resetCipherMap(){
+  C={...DEFAULT_C};buildReverse();buildTable();
+  addLog('admin','Reset cipher map to default');
+}
+
+// ─── Admin: PIN change ────────────────────────────────────────────────────────
+function changePin(who){
+  const field=document.getElementById(who==='user'?'new-upin':'new-apin');
+  const val=field.value.trim();
+  if(!/^\d{4}$/.test(val)){alert('PIN must be exactly 4 digits.');return;}
+  PINS[who]=val;
+  field.value='';
+  updatePinDisplay();
+  const n=document.getElementById('pin-notice');n.style.display='block';setTimeout(()=>n.style.display='none',2500);
+  addLog('admin',`Changed ${who} PIN`);
+}
+function updatePinDisplay(){
+  // Show last 2 digits masked for reference
+  document.getElementById('show-upin').textContent=PINS.user.slice(0,2)+'**';
+  document.getElementById('show-apin').textContent=PINS.admin.slice(0,2)+'**';
+}
+
+// ─── Admin: Stats ─────────────────────────────────────────────────────────────
+function refreshStats(){
+  document.getElementById('s-chars').textContent=Object.keys(C).length;
+  document.getElementById('s-uses').textContent=uses;
+  document.getElementById('s-logins').textContent=loginAttempts;
+}
+
+// ─── Admin: System info ───────────────────────────────────────────────────────
+function populateSysInfo(){
+  // IP
+  fetch('https://api.ipify.org?format=json')
+    .then(r=>r.json()).then(d=>{document.getElementById('sys-ip').textContent=d.ip||'Unavailable';})
+    .catch(()=>{document.getElementById('sys-ip').textContent='Unavailable';});
+  // UA / platform
+  const ua=navigator.userAgent;
+  const browsers=[['Chrome',/Chrome\/(\S+)/],['Firefox',/Firefox\/(\S+)/],['Safari',/Version\/(\S+).*Safari/],['Edge',/Edg\/(\S+)/]];
+  let bn='Unknown';
+  for(const[name,re]of browsers){const m=ua.match(re);if(m){bn=`${name} ${m[1]}`;break;}}
+  document.getElementById('sys-ua').textContent=bn;
+  document.getElementById('sys-plat').textContent=navigator.platform||'Unknown';
+  document.getElementById('sys-time').textContent=sessionStart.toLocaleTimeString();
+  document.getElementById('sys-url').textContent=window.location.href;
+  updatePinDisplay();
+}
+
+// ─── Admin: Activity Log ──────────────────────────────────────────────────────
+function addLog(r,action){
+  const t=new Date().toLocaleTimeString();
+  activityLog.unshift({t,r,action});
+  if(activityLog.length>50)activityLog.pop();
+  renderLog();
+}
+function renderLog(){
+  const tbody=document.getElementById('log-body');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  activityLog.forEach(e=>{
+    const tr=document.createElement('tr');
+    const pill=e.r==='admin'?`<span class="badge-pill pill-admin">admin</span>`:e.r==='user'?`<span class="badge-pill pill-user">user</span>`:`<span style="color:#4a4f66;font-size:10px">${e.r}</span>`;
+    tr.innerHTML=`<td>${e.t}</td><td>${pill}</td><td class="${e.r==='admin'?'log-admin':'log-action'}">${e.action}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+function clearLog(){activityLog=[];renderLog();addLog('admin','Cleared log');}
+
+// ─── Admin: Danger zone ───────────────────────────────────────────────────────
+function clearAll(){
+  document.getElementById('ei').value='';
+  document.getElementById('di').value='';
+  const eo=document.getElementById('eo');eo.textContent='Output will appear here';eo.className='output-box placeholder';
+  const do2=document.getElementById('do2');do2.textContent='Output will appear here';do2.className='output-box placeholder';
+  uses=0;refreshStats();addLog('admin','Cleared all fields');
+}
+function factoryReset(){
+  if(!confirm('Reset ALL settings, PINs, and cipher map to factory defaults?'))return;
+  PINS={user:'5858',admin:'1212'};
+  C={...DEFAULT_C};buildReverse();buildTable();
+  uses=0;loginAttempts=0;activityLog=[];
+  renderLog();refreshStats();updatePinDisplay();
+  addLog('admin','Factory reset performed');
+}
+
+// ─── Idle auto-lock ───────────────────────────────────────────────────────────
+function resetIdleTimer(){
+  clearTimeout(idleTimer);
+  const tog=document.getElementById('tog-autolock');
+  if(tog&&tog.checked){
+    idleTimer=setTimeout(()=>{if(role)lockOut();},5*60*1000);
+  }
+}
+document.addEventListener('keydown',resetIdleTimer);
+document.addEventListener('click',resetIdleTimer);
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+addLog('—','Page loaded');
 </script>
-
 </body>
 </html>
