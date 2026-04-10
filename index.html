@@ -10,7 +10,6 @@
 body{background:#0a0c12;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
 .shell{font-family:'Inter',sans-serif;background:#0f1117;border-radius:14px;overflow:hidden;min-height:580px;width:100%;max-width:420px}
 
-/* LOGIN */
 .login-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:580px;padding:40px 24px}
 .brand-mark{width:48px;height:48px;border-radius:12px;background:#1a1d27;border:1px solid #2a2d3a;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
 .brand-mark svg{width:22px;height:22px}
@@ -35,7 +34,6 @@ body{background:#0a0c12;display:flex;align-items:center;justify-content:center;m
 .ok-line{font-size:11px;color:#22c55e;text-align:center;margin-top:14px;height:16px}
 .admin-line{font-size:11px;color:#f59e0b;text-align:center;margin-top:14px;height:16px}
 
-/* MAIN */
 .main-wrap{display:none;flex-direction:column;min-height:580px}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #1e2130;background:#0f1117}
 .topbar-left{display:flex;align-items:center;gap:10px}
@@ -50,9 +48,9 @@ body{background:#0a0c12;display:flex;align-items:center;justify-content:center;m
 .badge-admin .badge-dot{background:#f59e0b}
 .lock-btn{padding:5px 12px;border-radius:6px;background:transparent;border:1px solid #1e2130;color:#4a4f66;font-family:'Inter',sans-serif;font-size:11px;cursor:pointer;transition:all 0.1s}
 .lock-btn:hover{border-color:#2a2d3a;color:#c8cad8}
-.content{padding:20px;flex:1;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
-.seg{display:flex;background:#141720;border:1px solid #1e2130;border-radius:8px;overflow:hidden}
-.seg-btn{flex:1;padding:9px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.3px;border:none;background:transparent;color:#4a4f66;cursor:pointer;transition:all 0.15s}
+.content{padding:20px;flex:1;display:flex;flex-direction:column;gap:16px;overflow-y:auto;max-height:calc(100vh - 70px)}
+.seg{display:flex;background:#141720;border:1px solid #1e2130;border-radius:8px;overflow:hidden;flex-shrink:0}
+.seg-btn{flex:1;padding:9px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.2px;border:none;background:transparent;color:#4a4f66;cursor:pointer;transition:all 0.15s}
 .seg-btn.on{background:#6366f1;color:#fff}
 .seg-btn.on-admin{background:#f59e0b;color:#0f1117}
 .seg-btn:not(:last-child){border-right:1px solid #1e2130}
@@ -75,9 +73,48 @@ input::placeholder{color:#2a2d3a}
 .copy-btn{padding:5px 12px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;cursor:pointer;background:transparent;color:#4a4f66;border:1px solid #1e2130;border-radius:6px;transition:all 0.1s}
 .copy-btn:hover{color:#c8cad8;border-color:#2a2d3a}
 
-/* ADMIN PANEL */
+/* ── SCAN PANEL ── */
+.mode-toggle{display:flex;background:#0f1117;border:1px solid #1e2130;border-radius:8px;overflow:hidden}
+.mode-btn{flex:1;padding:9px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;border:none;background:transparent;color:#4a4f66;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:5px}
+.mode-btn.active{background:#22c55e18;color:#22c55e;box-shadow:inset 0 -2px 0 #22c55e}
+.mode-btn:not(:last-child){border-right:1px solid #1e2130}
+
+.camera-zone{position:relative;background:#0a0c12;border:2px dashed #1e2130;border-radius:10px;overflow:hidden;width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color 0.2s}
+.camera-zone:hover{border-color:#6366f144}
+.camera-zone video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.camera-zone canvas{display:none}
+.camera-zone .preview-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.cam-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
+.cam-placeholder svg{width:34px;height:34px;opacity:0.25}
+.cam-placeholder .ph-title{font-size:13px;color:#4a4f66;font-weight:500}
+.cam-placeholder .ph-sub{font-size:11px;color:#2a2d3a}
+
+.scan-overlay{position:absolute;inset:0;background:#0a0c12cc;backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;z-index:10}
+.scan-overlay.on{display:flex}
+.spin{width:38px;height:38px;border:2.5px solid #1e2130;border-top-color:#6366f1;border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.scan-msg{font-size:11px;color:#6366f1;letter-spacing:0.5px;animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:0.4}50%{opacity:1}}
+
+.cam-btns{display:flex;gap:8px;margin-top:8px}
+.cam-btn{flex:1;padding:9px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;border:1px solid #1e2130;border-radius:8px;background:#141720;color:#c8cad8;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:5px}
+.cam-btn:hover{background:#1a1d27;border-color:#2a2d3a}
+.cam-btn.green{background:#22c55e;border-color:#22c55e;color:#fff}
+.cam-btn.green:hover{background:#16a34a}
+.cam-btn.red{color:#ef4444;border-color:#3a1a1a}
+.cam-btn.red:hover{background:#1f0a0a}
+.cam-btn:disabled{opacity:0.4;cursor:not-allowed}
+
+.ocr-box{background:#0d1f13;border:1px solid #1a3520;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.ocr-lbl{font-size:10px;font-weight:600;color:#22c55e;letter-spacing:0.8px;text-transform:uppercase}
+.ocr-txt{font-family:'JetBrains Mono',monospace;font-size:11px;color:#c8cad8;line-height:1.8;word-break:break-all}
+.ocr-hint{font-size:10px;color:#4a4f66;font-style:italic}
+.err-box{background:#1f0a0a;border:1px solid #3a1a1a;border-radius:8px;padding:10px 12px;font-size:11px;color:#ef4444;line-height:1.6}
+.ok-box{background:#0d1f13;border:1px solid #1a3520;border-radius:8px;padding:10px 12px;font-size:11px;color:#22c55e}
+
+/* ADMIN */
 .admin-panel{display:none;flex-direction:column;gap:18px}
-.admin-section-title{font-size:11px;font-weight:600;color:#f59e0b;letter-spacing:1px;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid #2a1f00;margin-bottom:2px}
+.admin-section-title{font-size:11px;font-weight:600;color:#f59e0b;letter-spacing:1px;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid #2a1f00}
 .cipher-table{width:100%;border-collapse:collapse}
 .cipher-table th{font-size:10px;font-weight:500;color:#4a4f66;letter-spacing:0.8px;text-transform:uppercase;padding:6px 8px;text-align:left;border-bottom:1px solid #1e2130}
 .cipher-table td{font-family:'JetBrains Mono',monospace;font-size:11px;color:#c8cad8;padding:5px 8px;border-bottom:1px solid #1a1d27;vertical-align:middle}
@@ -87,9 +124,7 @@ input::placeholder{color:#2a2d3a}
 .cipher-edit:focus{border-bottom-color:#f59e0b}
 .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .stat-card{background:#141720;border:1px solid #1e2130;border-radius:8px;padding:12px}
-.stat-val{font-size:20px;font-weight:600;color:#e8eaf0;margin-bottom:2px}
-.stat-val.amber{color:#f59e0b}
-.stat-val.green{color:#22c55e}
+.stat-val{font-size:20px;font-weight:600;color:#f59e0b;margin-bottom:2px}
 .stat-lbl{font-size:10px;color:#4a4f66;letter-spacing:0.5px}
 .table-wrap{max-height:200px;overflow-y:auto;border-radius:8px;border:1px solid #1e2130}
 .table-wrap::-webkit-scrollbar{width:4px}
@@ -100,13 +135,10 @@ input::placeholder{color:#2a2d3a}
 .save-btn{padding:9px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;background:#f59e0b;color:#0f1117;border:none;border-radius:8px;transition:all 0.1s;width:100%}
 .save-btn:hover{background:#d97706}
 .inline-row{display:flex;gap:8px;align-items:flex-end}
-.inline-row .run-btn{flex:1}
 .field-group{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
 .log-table{width:100%;border-collapse:collapse}
 .log-table th{font-size:10px;font-weight:500;color:#4a4f66;letter-spacing:0.8px;text-transform:uppercase;padding:5px 8px;text-align:left;border-bottom:1px solid #1e2130}
 .log-table td{font-family:'JetBrains Mono',monospace;font-size:10px;color:#c8cad8;padding:4px 8px;border-bottom:1px solid #1a1d27}
-.log-table .log-action{color:#6366f1}
-.log-table .log-admin{color:#f59e0b}
 .badge-pill{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:500}
 .pill-user{background:#1a1f3a;color:#6366f1}
 .pill-admin{background:#1f1500;color:#f59e0b}
@@ -116,14 +148,13 @@ input::placeholder{color:#2a2d3a}
 .info-card .info-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:#c8cad8;word-break:break-all}
 .toggle-row{display:flex;align-items:center;justify-content:space-between;background:#141720;border:1px solid #1e2130;border-radius:8px;padding:10px 14px}
 .toggle-row span{font-size:12px;color:#c8cad8}
-.toggle{position:relative;width:38px;height:20px}
-.toggle input{opacity:0;width:0;height:0}
+.tog-wrap{position:relative;width:38px;height:20px}
+.tog-wrap input{opacity:0;width:0;height:0}
 .slider{position:absolute;inset:0;background:#2a2d3a;border-radius:20px;cursor:pointer;transition:.2s}
-.slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#6366f1;border-radius:50%;transition:.2s}
-input:checked+.slider{background:#2a1f00}
-input:checked+.slider:before{background:#f59e0b;transform:translateX(18px)}
-.notice{background:#1f1500;border:1px solid #3a2800;border-radius:8px;padding:10px 12px;font-size:11px;color:#f59e0b;line-height:1.6}
-.green-notice{background:#0d1f13;border:1px solid #1a3520;border-radius:8px;padding:10px 12px;font-size:11px;color:#22c55e;line-height:1.6}
+.slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#4a4f66;border-radius:50%;transition:.2s}
+.tog-wrap input:checked+.slider{background:#2a1f00}
+.tog-wrap input:checked+.slider:before{background:#f59e0b;transform:translateX(18px)}
+.green-notice{background:#0d1f13;border:1px solid #1a3520;border-radius:8px;padding:10px 12px;font-size:11px;color:#22c55e}
 </style>
 </head>
 <body>
@@ -148,33 +179,21 @@ input:checked+.slider:before{background:#f59e0b;transform:translateX(18px)}
       <div class="dot" id="d2"></div><div class="dot" id="d3"></div>
     </div>
     <div class="numpad">
-      <button class="nb" onclick="ap('1')">1</button>
-      <button class="nb" onclick="ap('2')">2</button>
-      <button class="nb" onclick="ap('3')">3</button>
-      <button class="nb" onclick="ap('4')">4</button>
-      <button class="nb" onclick="ap('5')">5</button>
-      <button class="nb" onclick="ap('6')">6</button>
-      <button class="nb" onclick="ap('7')">7</button>
-      <button class="nb" onclick="ap('8')">8</button>
-      <button class="nb" onclick="ap('9')">9</button>
-      <button class="nb del" onclick="dp()">&#x232B;</button>
-      <button class="nb" onclick="ap('0')">0</button>
-      <button class="nb" style="opacity:0;pointer-events:none"></button>
+      <button class="nb" onclick="ap('1')">1</button><button class="nb" onclick="ap('2')">2</button><button class="nb" onclick="ap('3')">3</button>
+      <button class="nb" onclick="ap('4')">4</button><button class="nb" onclick="ap('5')">5</button><button class="nb" onclick="ap('6')">6</button>
+      <button class="nb" onclick="ap('7')">7</button><button class="nb" onclick="ap('8')">8</button><button class="nb" onclick="ap('9')">9</button>
+      <button class="nb del" onclick="dp()">⌫</button><button class="nb" onclick="ap('0')">0</button><button class="nb" style="opacity:0;pointer-events:none"></button>
     </div>
     <div id="msg" class="err-line"></div>
   </div>
 </div>
 
-<!-- MAIN APP -->
+<!-- MAIN -->
 <div class="main-wrap" id="main">
   <div class="topbar">
     <div class="topbar-left">
       <div class="topbar-icon">
-        <svg viewBox="0 0 13 13" fill="none">
-          <rect x="1" y="5" width="11" height="7" rx="1.5" stroke="#6366f1" stroke-width="1.2" fill="#6366f111"/>
-          <path d="M4 5V3.5a2.5 2.5 0 0 1 5 0V5" stroke="#6366f1" stroke-width="1.2" stroke-linecap="round"/>
-          <circle cx="6.5" cy="8.5" r="1" fill="#6366f1"/>
-        </svg>
+        <svg viewBox="0 0 13 13" fill="none"><rect x="1" y="5" width="11" height="7" rx="1.5" stroke="#6366f1" stroke-width="1.2" fill="#6366f111"/><path d="M4 5V3.5a2.5 2.5 0 0 1 5 0V5" stroke="#6366f1" stroke-width="1.2" stroke-linecap="round"/><circle cx="6.5" cy="8.5" r="1" fill="#6366f1"/></svg>
       </div>
       <span class="topbar-title">Cipher Vault</span>
     </div>
@@ -185,9 +204,10 @@ input:checked+.slider:before{background:#f59e0b;transform:translateX(18px)}
   </div>
 
   <div class="content">
-    <div class="seg" id="seg-bar">
+    <div class="seg">
       <button class="seg-btn on" id="et" onclick="sm('e')">Encrypt</button>
       <button class="seg-btn" id="dt" onclick="sm('d')">Decrypt</button>
+      <button class="seg-btn" id="st" onclick="sm('s')">📷 Scan</button>
       <button class="seg-btn" id="at" onclick="sm('a')" style="display:none">Admin</button>
     </div>
 
@@ -211,98 +231,149 @@ input:checked+.slider:before{background:#f59e0b;transform:translateX(18px)}
       </div>
     </div>
 
+    <!-- SCAN & DECRYPT -->
+    <div id="sp" style="display:none">
+      <!-- Info banner -->
+      <div style="background:#141720;border:1px solid #1e2130;border-radius:10px;padding:12px;margin-bottom:4px">
+        <div style="font-size:12px;font-weight:500;color:#e8eaf0;margin-bottom:4px">📷 Scan Handwritten Cipher</div>
+        <div style="font-size:11px;color:#4a4f66;line-height:1.7">Take a photo or upload an image of handwritten cipher codes. Claude AI reads even messy handwriting and decrypts it automatically.</div>
+      </div>
+
+      <!-- Camera / Upload toggle -->
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="mb-cam" onclick="setMode('cam')">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="9" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 4V3a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.3"/></svg>
+          Camera
+        </button>
+        <button class="mode-btn" id="mb-file" onclick="setMode('file')">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 6h6M5 9h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Upload Photo
+        </button>
+      </div>
+
+      <!-- Camera section -->
+      <div id="sec-cam">
+        <div class="camera-zone" id="camZone" onclick="camZoneClick()">
+          <video id="camVid" autoplay playsinline muted></video>
+          <canvas id="camCanvas" style="display:none"></canvas>
+          <img id="camPrev" class="preview-img" alt="">
+          <div class="cam-placeholder" id="camPH">
+            <svg viewBox="0 0 32 32" fill="none" stroke="#6366f1" stroke-width="1.3">
+              <rect x="2" y="7" width="28" height="20" rx="3"/><circle cx="16" cy="17" r="6"/>
+              <path d="M11 7V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <div class="ph-title">Tap to open camera</div>
+            <div class="ph-sub">Point at handwritten cipher text</div>
+          </div>
+          <div class="scan-overlay" id="camOvr">
+            <div class="spin"></div>
+            <div class="scan-msg" id="camMsg">Reading handwriting…</div>
+          </div>
+        </div>
+        <div class="cam-btns" id="camLiveBtns" style="display:none">
+          <button class="cam-btn red" onclick="resetCam()">✕ Cancel</button>
+          <button class="cam-btn green" onclick="snapPhoto()">📸 Capture photo</button>
+        </div>
+        <div class="cam-btns" id="camCapBtns" style="display:none">
+          <button class="cam-btn red" onclick="resetCam()">✕ Retake</button>
+          <button class="cam-btn green" id="camScanBtn" onclick="runCamScan()">🔍 Scan &amp; Decrypt</button>
+        </div>
+      </div>
+
+      <!-- File section -->
+      <div id="sec-file" style="display:none">
+        <div class="camera-zone" id="fileZone" onclick="document.getElementById('fileIn').click()">
+          <img id="filePrev" class="preview-img" alt="">
+          <div class="cam-placeholder" id="filePH">
+            <svg viewBox="0 0 32 32" fill="none" stroke="#6366f1" stroke-width="1.3">
+              <rect x="4" y="3" width="24" height="26" rx="3"/>
+              <path d="M16 10v10M11 15l5-5 5 5"/>
+            </svg>
+            <div class="ph-title">Tap to upload photo</div>
+            <div class="ph-sub">JPG, PNG, HEIC supported</div>
+          </div>
+          <div class="scan-overlay" id="fileOvr">
+            <div class="spin"></div>
+            <div class="scan-msg" id="fileMsg">Reading handwriting…</div>
+          </div>
+        </div>
+        <input type="file" id="fileIn" accept="image/*" style="display:none" onchange="handleFile(event)">
+        <div class="cam-btns" id="fileBtns" style="display:none">
+          <button class="cam-btn red" onclick="resetFile()">✕ Clear</button>
+          <button class="cam-btn green" onclick="runFileScan()">🔍 Scan &amp; Decrypt</button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div id="scanErr" class="err-box" style="display:none"></div>
+      <div id="ocrBox" class="ocr-box" style="display:none">
+        <div class="ocr-lbl">📝 What AI read from the image</div>
+        <div class="ocr-txt" id="ocrTxt"></div>
+        <div class="ocr-hint">Claude extracted this cipher text from your handwriting. Decoded result below.</div>
+      </div>
+      <div id="scanOut" style="display:none">
+        <div class="fl">Decrypted message</div>
+        <div class="output-box" id="scanDo" style="font-size:15px;font-weight:500;color:#e8eaf0;letter-spacing:0.5px"></div>
+        <div class="copy-row"><button class="copy-btn" onclick="cp('scanDo')">Copy</button></div>
+      </div>
+    </div>
+
     <!-- ADMIN PANEL -->
     <div class="admin-panel" id="ap2">
-
-      <!-- Overview -->
       <div>
         <div class="admin-section-title">Overview</div>
         <div class="stat-row">
-          <div class="stat-card"><div class="stat-val amber" id="s-chars">36</div><div class="stat-lbl">Cipher chars</div></div>
-          <div class="stat-card"><div class="stat-val amber" id="s-logins">0</div><div class="stat-lbl">Login attempts</div></div>
-          <div class="stat-card"><div class="stat-val amber" id="s-uses">0</div><div class="stat-lbl">Uses this session</div></div>
+          <div class="stat-card"><div class="stat-val" id="s-chars">36</div><div class="stat-lbl">Cipher chars</div></div>
+          <div class="stat-card"><div class="stat-val" id="s-logins">0</div><div class="stat-lbl">Login attempts</div></div>
+          <div class="stat-card"><div class="stat-val" id="s-uses">0</div><div class="stat-lbl">Session uses</div></div>
         </div>
       </div>
-
-      <!-- System info -->
       <div>
         <div class="admin-section-title">System Info</div>
         <div class="info-grid">
-          <div class="info-card"><div class="info-lbl">Your IP Address</div><div class="info-val" id="sys-ip">Fetching…</div></div>
+          <div class="info-card"><div class="info-lbl">Your IP</div><div class="info-val" id="sys-ip">Fetching…</div></div>
           <div class="info-card"><div class="info-lbl">Browser</div><div class="info-val" id="sys-ua">—</div></div>
           <div class="info-card"><div class="info-lbl">Platform</div><div class="info-val" id="sys-plat">—</div></div>
-          <div class="info-card"><div class="info-lbl">Session started</div><div class="info-val" id="sys-time">—</div></div>
-          <div class="info-card" style="grid-column:1/-1"><div class="info-lbl">Page URL / Hash</div><div class="info-val" id="sys-url">—</div></div>
+          <div class="info-card"><div class="info-lbl">Session start</div><div class="info-val" id="sys-time">—</div></div>
+          <div class="info-card" style="grid-column:1/-1"><div class="info-lbl">URL / Hash</div><div class="info-val" id="sys-url">—</div></div>
         </div>
       </div>
-
-      <!-- Change PINs -->
       <div>
         <div class="admin-section-title">Access Codes</div>
         <div class="field-group">
-          <div class="fl">User PIN (currently <span id="show-upin" style="color:#6366f1;font-family:monospace">****</span>)</div>
+          <div class="fl">User PIN — currently <span id="show-upin" style="color:#6366f1;font-family:monospace">****</span></div>
           <div class="inline-row">
-            <input type="password" id="new-upin" placeholder="New 4-digit user PIN" maxlength="4">
-            <button class="run-btn run-btn-admin" style="max-width:90px;padding:10px" onclick="changePin('user')">Save</button>
+            <input type="password" id="new-upin" placeholder="New 4-digit PIN" maxlength="4">
+            <button class="run-btn run-btn-admin" style="max-width:80px;padding:10px;font-size:12px" onclick="changePin('user')">Save</button>
           </div>
         </div>
         <div class="field-group">
-          <div class="fl">Admin PIN (currently <span id="show-apin" style="color:#f59e0b;font-family:monospace">****</span>)</div>
+          <div class="fl">Admin PIN — currently <span id="show-apin" style="color:#f59e0b;font-family:monospace">****</span></div>
           <div class="inline-row">
-            <input type="password" id="new-apin" placeholder="New 4-digit admin PIN" maxlength="4">
-            <button class="run-btn run-btn-admin" style="max-width:90px;padding:10px" onclick="changePin('admin')">Save</button>
+            <input type="password" id="new-apin" placeholder="New 4-digit PIN" maxlength="4">
+            <button class="run-btn run-btn-admin" style="max-width:80px;padding:10px;font-size:12px" onclick="changePin('admin')">Save</button>
           </div>
         </div>
         <div class="green-notice" id="pin-notice" style="display:none">✓ PIN updated successfully.</div>
       </div>
-
-      <!-- Cipher Map Editor -->
       <div>
         <div class="admin-section-title">Cipher Map Editor</div>
-        <div class="table-wrap">
-          <table class="cipher-table" id="ctable"></table>
-        </div>
+        <div class="table-wrap"><table class="cipher-table" id="ctable"></table></div>
         <div style="margin-top:8px;display:flex;gap:8px">
           <button class="save-btn" onclick="saveCipherMap()">Save cipher map</button>
-          <button class="reset-btn" style="border-color:#2a2d3a;color:#4a4f66" onclick="resetCipherMap()">Reset to default</button>
+          <button class="reset-btn" style="border-color:#2a2d3a;color:#4a4f66" onclick="resetCipherMap()">Reset default</button>
         </div>
         <div class="green-notice" id="cipher-notice" style="display:none;margin-top:8px">✓ Cipher map saved.</div>
       </div>
-
-      <!-- Settings toggles -->
       <div>
         <div class="admin-section-title">Settings</div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div class="toggle-row">
-            <span>Require PIN on decrypt</span>
-            <label class="toggle"><input type="checkbox" id="tog-pin-decrypt" checked><span class="slider"></span></label>
-          </div>
-          <div class="toggle-row">
-            <span>Show session log to users</span>
-            <label class="toggle"><input type="checkbox" id="tog-show-log"><span class="slider"></span></label>
-          </div>
-          <div class="toggle-row">
-            <span>Auto-lock after 5 minutes idle</span>
-            <label class="toggle"><input type="checkbox" id="tog-autolock" checked><span class="slider"></span></label>
-          </div>
-        </div>
+        <div class="toggle-row"><span>Auto-lock after 5 min idle</span><label class="tog-wrap"><input type="checkbox" id="tog-autolock" checked><span class="slider"></span></label></div>
       </div>
-
-      <!-- Activity Log -->
       <div>
         <div class="admin-section-title">Activity Log</div>
-        <div class="table-wrap">
-          <table class="log-table">
-            <thead><tr><th>Time</th><th>Role</th><th>Action</th></tr></thead>
-            <tbody id="log-body"></tbody>
-          </table>
-        </div>
-        <div style="margin-top:8px">
-          <button class="reset-btn" style="border-color:#2a2d3a;color:#4a4f66" onclick="clearLog()">Clear log</button>
-        </div>
+        <div class="table-wrap"><table class="log-table"><thead><tr><th>Time</th><th>Role</th><th>Action</th></tr></thead><tbody id="log-body"></tbody></table></div>
+        <div style="margin-top:8px"><button class="reset-btn" style="border-color:#2a2d3a;color:#4a4f66" onclick="clearLog()">Clear log</button></div>
       </div>
-
-      <!-- Danger Zone -->
       <div>
         <div class="admin-section-title">Danger Zone</div>
         <div style="display:flex;flex-direction:column;gap:8px">
@@ -310,153 +381,222 @@ input:checked+.slider:before{background:#f59e0b;transform:translateX(18px)}
           <button class="reset-btn" onclick="factoryReset()">Factory reset (restore all defaults)</button>
         </div>
       </div>
-
-    </div><!-- /admin-panel -->
+    </div>
   </div>
 </div>
-
-</div><!-- /shell -->
+</div>
 
 <script>
-// ─── State ───────────────────────────────────────────────────────────────────
-const DEFAULT_C = {A:'10A379E',B:'L3A2T72A',C:'3A7212',D:'061379EF',E:'0G100M21',F:'001A379E1',G:'0E02081',H:'NV2A21',I:'000S1+E321',J:'KLM3123',K:'12100KL',L:'13567124',M:'12B61EFG',N:'LLW1691',O:'01023Q1',P:'L0121+9421',Q:'SW13I2',R:'DG5T24121',S:'WS23129',T:'05AL123',U:'V5W1239',V:'050EZ139',W:'W0W09E7',X:'ENELI93',Y:'LWE014',Z:'EEC001031','0':'EEE006','1':'010Q2E1','2':'3109E1F','3':'390EFE1','4':'2312EEX','5':'FE392F','6':'XEF2ERt','7':'EP90012','8':'E9023I','9':'2291EXE'};
+// ── State ─────────────────────────────────────────────────────────────────────
+const DEFAULT_C={A:'10A379E',B:'L3A2T72A',C:'3A7212',D:'061379EF',E:'0G100M21',F:'001A379E1',G:'0E02081',H:'NV2A21',I:'000S1+E321',J:'KLM3123',K:'12100KL',L:'13567124',M:'12B61EFG',N:'LLW1691',O:'01023Q1',P:'L0121+9421',Q:'SW13I2',R:'DG5T24121',S:'WS23129',T:'05AL123',U:'V5W1239',V:'050EZ139',W:'W0W09E7',X:'ENELI93',Y:'LWE014',Z:'EEC001031','0':'EEE006','1':'010Q2E1','2':'3109E1F','3':'390EFE1','4':'2312EEX','5':'FE392F','6':'XEF2ERt','7':'EP90012','8':'E9023I','9':'2291EXE'};
+let C={...DEFAULT_C},R={};
+let PINS={user:'5858',admin:'1212'};
+let pin='',uses=0,role='',loginAttempts=0,activityLog=[],sessionStart=new Date(),idleTimer=null,adminUnlocked=false;
+let camStream=null,capturedUrl=null,fileDataUrl=null,scanInputMode='cam';
 
-let C = {...DEFAULT_C};
-let R = {};
-let PINS = {user:'5858', admin:'1212'};
-let pin='', uses=0, role='', loginAttempts=0;
-let activityLog = [];
-let sessionStart = new Date();
-let idleTimer = null;
-let adminUnlocked = false; // hash-based unlock
+function buildR(){R={};for(const[k,v]of Object.entries(C))R[v.toUpperCase()]=k;}
+buildR();
 
-function buildReverse(){R={};for(const[k,v]of Object.entries(C))R[v.toUpperCase()]=k;}
-buildReverse();
+// hash check
+function checkHash(){adminUnlocked=window.location.hash==='#adminpanelyes';if(adminUnlocked)document.getElementById('login-sub').textContent='Admin access enabled via URL';}
+checkHash();window.addEventListener('hashchange',checkHash);
 
-// ─── Hash Detection ───────────────────────────────────────────────────────────
-function checkHash(){
-  const h = window.location.hash;
-  adminUnlocked = (h === '#adminpanelyes');
-  if(adminUnlocked){
-    document.getElementById('login-sub').textContent = 'Admin access enabled via URL';
-  }
-}
-checkHash();
-window.addEventListener('hashchange', ()=>{
-  checkHash();
-  // If already inside, reflect change live
-  if(role==='admin') updateAdminHashNotice();
-});
-
-// ─── Login ────────────────────────────────────────────────────────────────────
+// ── Login ─────────────────────────────────────────────────────────────────────
 function ap(n){if(pin.length>=4)return;pin+=n;ud();if(pin.length===4)setTimeout(ck,100);}
 function dp(){pin=pin.slice(0,-1);ud();setMsg('');}
-function ud(e,adm){
-  for(let i=0;i<4;i++){
-    const d=document.getElementById('d'+i);
-    d.className='dot';
-    if(i<pin.length){
-      if(e)d.classList.add('error');
-      else if(adm)d.classList.add('admin-fill');
-      else d.classList.add('filled');
-    }
-  }
-}
-function setMsg(t,type){
-  const el=document.getElementById('msg');
-  el.textContent=t;
-  el.className=type==='ok'?'ok-line':type==='admin'?'admin-line':'err-line';
-}
+function ud(e,adm){for(let i=0;i<4;i++){const d=document.getElementById('d'+i);d.className='dot';if(i<pin.length){if(e)d.classList.add('error');else if(adm)d.classList.add('admin-fill');else d.classList.add('filled');}}}
+function setMsg(t,tp){const el=document.getElementById('msg');el.textContent=t;el.className=tp==='ok'?'ok-line':tp==='admin'?'admin-line':'err-line';}
 function ck(){
   loginAttempts++;
-  if(pin===PINS.user){
-    role='user';ud(false,false);
-    for(let i=0;i<4;i++)document.getElementById('d'+i).classList.add('success');
-    setMsg('Access granted','ok');
-    addLog('user','Logged in');
-    setTimeout(enterApp,500);
-  } else if(pin===PINS.admin){
-    role='admin';ud(false,true);
-    setMsg('Admin access granted','admin');
-    addLog('admin','Admin login');
-    setTimeout(enterApp,500);
-  } else {
-    ud(true);setMsg('Incorrect PIN — try again');
-    addLog('—','Failed login attempt');
-    setTimeout(()=>{pin='';ud();setMsg('');},700);
-  }
+  if(pin===PINS.user){role='user';ud();for(let i=0;i<4;i++)document.getElementById('d'+i).classList.add('success');setMsg('Access granted','ok');addLog('user','Logged in');setTimeout(enterApp,500);}
+  else if(pin===PINS.admin){role='admin';ud(false,true);setMsg('Admin access granted','admin');addLog('admin','Admin login');setTimeout(enterApp,500);}
+  else{ud(true);setMsg('Incorrect PIN — try again');addLog('—','Failed login attempt');setTimeout(()=>{pin='';ud();setMsg('');},700);}
 }
-
-// ─── App enter/exit ───────────────────────────────────────────────────────────
 function enterApp(){
   document.getElementById('login').style.display='none';
-  const m=document.getElementById('main');m.style.display='flex';
-  const badge=document.getElementById('status-badge');
-  const btxt=document.getElementById('badge-txt');
-  const atab=document.getElementById('at');
-
-  // Show admin tab only if: role===admin AND hash is #adminpanelyes
-  const showAdmin = role==='admin' && adminUnlocked;
-
-  if(role==='admin'){
-    badge.className='badge badge-admin';
-    btxt.textContent='Admin';
-  } else {
-    badge.className='badge badge-secure';
-    btxt.textContent='Secure';
-  }
-
-  if(showAdmin){
-    atab.style.display='';
-    populateSysInfo();
-    buildTable();
-    refreshStats();
-  } else {
-    atab.style.display='none';
-  }
-  sm('e');
-  resetIdleTimer();
+  document.getElementById('main').style.display='flex';
+  const badge=document.getElementById('status-badge'),btxt=document.getElementById('badge-txt'),atab=document.getElementById('at');
+  if(role==='admin'){badge.className='badge badge-admin';btxt.textContent='Admin';}
+  else{badge.className='badge badge-secure';btxt.textContent='Secure';}
+  if(role==='admin'&&adminUnlocked){atab.style.display='';populateSysInfo();buildTable();refreshStats();}
+  else atab.style.display='none';
+  sm('e');resetIdleTimer();
 }
+function lockOut(){clearTimeout(idleTimer);addLog(role||'—','Locked out');pin='';role='';ud();setMsg('');stopCam();document.getElementById('main').style.display='none';document.getElementById('login').style.display='flex';}
 
-function lockOut(){
-  clearTimeout(idleTimer);
-  addLog(role||'—','Locked out');
-  pin='';role='';ud();setMsg('');
-  document.getElementById('main').style.display='none';
-  document.getElementById('login').style.display='flex';
-}
-
-// ─── Tabs ─────────────────────────────────────────────────────────────────────
+// ── Tabs ──────────────────────────────────────────────────────────────────────
 function sm(m){
-  const tabs={e:'et',d:'dt',a:'at'};
-  const panels={e:'ep',d:'dp2',a:'ap2'};
-  for(const[k,tid] of Object.entries(tabs)){
-    const t=document.getElementById(tid);
+  ['e','d','s','a'].forEach(k=>{
+    const t=document.getElementById({e:'et',d:'dt',s:'st',a:'at'}[k]);
     if(t){t.className='seg-btn';if(k===m)t.classList.add(role==='admin'?'on-admin':'on');}
-  }
-  for(const[k,pid] of Object.entries(panels)){
-    const p=document.getElementById(pid);
+  });
+  [{k:'e',id:'ep'},{k:'d',id:'dp2'},{k:'s',id:'sp'},{k:'a',id:'ap2'}].forEach(({k,id})=>{
+    const p=document.getElementById(id);
     if(p)p.style.display=k===m?(k==='a'?'flex':'block'):'none';
+  });
+  if(m!=='s')stopCam();
+}
+
+// ── Encrypt / Decrypt ─────────────────────────────────────────────────────────
+function enc(){const t=document.getElementById('ei').value.toUpperCase();const p=[];for(const ch of t){if(ch===' ')p.push('   ');else if(C[ch])p.push(C[ch]);else p.push('[?]');}const el=document.getElementById('eo');el.textContent=p.join(' / ')||'—';el.classList.remove('placeholder');uses++;refreshStats();addLog(role,'Encrypted');resetIdleTimer();}
+function dec(){const t=document.getElementById('di').value.trim();const el=document.getElementById('do2');el.textContent=decodeRaw(t)||'—';el.classList.remove('placeholder');uses++;refreshStats();addLog(role,'Decrypted');resetIdleTimer();}
+function cp(id){navigator.clipboard.writeText(document.getElementById(id).textContent).catch(()=>{});}
+function decodeRaw(raw){const tokens=raw.split(/\s*\/\s*/);let o='';for(const tok of tokens){const k=tok.trim();if(!k){o+=' ';continue;}o+=R[k.toUpperCase()]||'[?]';}return o;}
+
+// ── SCAN MODE ─────────────────────────────────────────────────────────────────
+function setMode(m){
+  scanInputMode=m;
+  document.getElementById('mb-cam').className='mode-btn'+(m==='cam'?' active':'');
+  document.getElementById('mb-file').className='mode-btn'+(m==='file'?' active':'');
+  document.getElementById('sec-cam').style.display=m==='cam'?'block':'none';
+  document.getElementById('sec-file').style.display=m==='file'?'block':'none';
+  clearScanOut();
+  if(m!=='cam')stopCam();
+}
+
+// Camera
+async function camZoneClick(){
+  if(capturedUrl||camStream)return;
+  try{
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false});
+    const vid=document.getElementById('camVid');
+    vid.srcObject=camStream;vid.style.display='block';
+    document.getElementById('camPH').style.display='none';
+    document.getElementById('camLiveBtns').style.display='flex';
+  }catch(e){showErr('Camera access denied. Try "Upload Photo" mode instead.');}
+}
+function snapPhoto(){
+  const vid=document.getElementById('camVid');
+  const canvas=document.getElementById('camCanvas');
+  canvas.width=vid.videoWidth||1280;canvas.height=vid.videoHeight||720;
+  canvas.getContext('2d').drawImage(vid,0,0);
+  capturedUrl=canvas.toDataURL('image/jpeg',0.93);
+  const prev=document.getElementById('camPrev');prev.src=capturedUrl;prev.style.display='block';
+  vid.style.display='none';stopCam();
+  document.getElementById('camLiveBtns').style.display='none';
+  document.getElementById('camCapBtns').style.display='flex';
+  clearScanOut();
+}
+function stopCam(){if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}}
+function resetCam(){
+  stopCam();capturedUrl=null;
+  const vid=document.getElementById('camVid');vid.style.display='none';vid.srcObject=null;
+  document.getElementById('camPrev').style.display='none';
+  document.getElementById('camPH').style.display='flex';
+  document.getElementById('camLiveBtns').style.display='none';
+  document.getElementById('camCapBtns').style.display='none';
+  clearScanOut();
+}
+
+// File
+function handleFile(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    fileDataUrl=ev.target.result;
+    const prev=document.getElementById('filePrev');prev.src=fileDataUrl;prev.style.display='block';
+    document.getElementById('filePH').style.display='none';
+    document.getElementById('fileBtns').style.display='flex';
+    clearScanOut();
+  };reader.readAsDataURL(file);
+}
+function resetFile(){
+  fileDataUrl=null;
+  document.getElementById('filePrev').style.display='none';
+  document.getElementById('filePH').style.display='flex';
+  document.getElementById('fileBtns').style.display='none';
+  document.getElementById('fileIn').value='';
+  clearScanOut();
+}
+function clearScanOut(){
+  document.getElementById('scanErr').style.display='none';
+  document.getElementById('ocrBox').style.display='none';
+  document.getElementById('scanOut').style.display='none';
+}
+function showErr(msg){const el=document.getElementById('scanErr');el.textContent=msg;el.style.display='block';}
+
+async function runCamScan(){if(!capturedUrl){showErr('No photo captured.');return;}await doScan(capturedUrl,'camOvr','camMsg');}
+async function runFileScan(){if(!fileDataUrl){showErr('No image selected.');return;}await doScan(fileDataUrl,'fileOvr','fileMsg');}
+
+async function doScan(dataUrl,ovrId,msgId){
+  clearScanOut();
+  const ovr=document.getElementById(ovrId),msgEl=document.getElementById(msgId);
+  ovr.classList.add('on');
+  const msgs=['Reading handwriting…','Deciphering the scrawl…','AI squinting hard…','Cross-checking codes…','Almost done…'];
+  let mi=0;const ticker=setInterval(()=>{mi=(mi+1)%msgs.length;msgEl.textContent=msgs[mi];},1600);
+
+  // Build cipher description
+  const cDesc=Object.entries(C).map(([k,v])=>`"${k}" → "${v}"`).join(', ');
+  const b64=dataUrl.split(',')[1];
+  const mime=(dataUrl.match(/data:([^;]+);/)||[])[1]||'image/jpeg';
+
+  const prompt=`This image contains handwritten cipher codes from a custom cipher system.
+
+CIPHER MAP (read these codes and decode them):
+${cDesc}
+
+HOW THE CIPHER WORKS:
+- Each letter or number is replaced by its cipher code shown above
+- Codes are separated by " / " (space slash space)
+- Words are separated by "   " (triple space) or a blank gap between slashes
+
+YOUR TASK:
+1. Carefully read ALL handwritten text from the image, even if handwriting is messy, scratchy, or ugly. Do your absolute best.
+2. Extract the cipher codes (the weird-looking strings separated by slashes)
+3. Decode each code using the cipher map above
+4. Return ONLY valid JSON, no extra text, no markdown fences:
+{"raw":"<cipher codes you read, separated by ' / '>","decoded":"<the decoded plaintext message>","confidence":"<high/medium/low>"}`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:[
+          {type:'image',source:{type:'base64',media_type:mime,data:b64}},
+          {type:'text',text:prompt}
+        ]}]
+      })
+    });
+    clearInterval(ticker);ovr.classList.remove('on');
+
+    if(!res.ok){
+      const err=await res.json().catch(()=>({}));
+      showErr('API error: '+(err?.error?.message||res.statusText));
+      addLog(role,'Scan failed: API error');return;
+    }
+    const data=await res.json();
+    const txt=data.content.filter(b=>b.type==='text').map(b=>b.text).join('').trim();
+
+    let parsed;
+    try{parsed=JSON.parse(txt.replace(/```json|```/g,'').trim());}
+    catch{
+      // fallback: show raw, attempt manual decode
+      document.getElementById('ocrTxt').textContent=txt;
+      document.getElementById('ocrBox').style.display='flex';
+      const decoded=decodeRaw(txt);
+      document.getElementById('scanDo').textContent=decoded||'[could not decode]';
+      document.getElementById('scanOut').style.display='block';
+      addLog(role,'Scan done (raw fallback)');return;
+    }
+
+    document.getElementById('ocrTxt').textContent=parsed.raw||txt;
+    document.getElementById('ocrBox').style.display='flex';
+    const decoded=parsed.decoded||decodeRaw(parsed.raw||txt);
+    document.getElementById('scanDo').textContent=decoded||'[could not decode]';
+    document.getElementById('scanOut').style.display='block';
+    uses++;refreshStats();addLog(role,`Photo scan & decrypt (confidence: ${parsed.confidence||'?'})`);
+
+  }catch(e){
+    clearInterval(ticker);ovr.classList.remove('on');
+    showErr('Network error: '+e.message);
+    addLog(role,'Scan error: '+e.message);
   }
 }
 
-// ─── Encrypt / Decrypt ────────────────────────────────────────────────────────
-function enc(){
-  const t=document.getElementById('ei').value.toUpperCase();
-  const p=[];for(const ch of t){if(ch===' ')p.push('   ');else if(C[ch])p.push(C[ch]);else p.push('[?]');}
-  const el=document.getElementById('eo');el.textContent=p.join(' / ')||'—';el.classList.remove('placeholder');
-  uses++;refreshStats();addLog(role,'Encrypted message');resetIdleTimer();
-}
-function dec(){
-  const t=document.getElementById('di').value.trim();
-  const tokens=t.split(/\s*\/\s*/);let out='';
-  for(const tok of tokens){const k=tok.trim();if(!k){out+=' ';continue;}out+=R[k.toUpperCase()]||'[?]';}
-  const el=document.getElementById('do2');el.textContent=out||'—';el.classList.remove('placeholder');
-  uses++;refreshStats();addLog(role,'Decrypted message');resetIdleTimer();
-}
-function cp(id){navigator.clipboard.writeText(document.getElementById(id).textContent).catch(()=>{});}
-
-// ─── Admin: Cipher table (editable) ──────────────────────────────────────────
+// ── Admin ─────────────────────────────────────────────────────────────────────
 function buildTable(){
   const t=document.getElementById('ctable');
   t.innerHTML='<tr><th>Char</th><th>Cipher code (editable)</th><th>Type</th></tr>';
@@ -467,111 +607,63 @@ function buildTable(){
   }
 }
 function saveCipherMap(){
-  document.querySelectorAll('.cipher-edit').forEach(inp=>{
-    const key=inp.dataset.key;
-    const val=inp.value.trim();
-    if(val) C[key]=val;
-  });
-  buildReverse();
-  const n=document.getElementById('cipher-notice');n.style.display='block';setTimeout(()=>n.style.display='none',2000);
-  addLog('admin','Saved cipher map');
+  document.querySelectorAll('.cipher-edit').forEach(i=>{const v=i.value.trim();if(v)C[i.dataset.key]=v;});
+  buildR();const n=document.getElementById('cipher-notice');n.style.display='block';setTimeout(()=>n.style.display='none',2000);addLog('admin','Saved cipher map');
 }
-function resetCipherMap(){
-  C={...DEFAULT_C};buildReverse();buildTable();
-  addLog('admin','Reset cipher map to default');
-}
-
-// ─── Admin: PIN change ────────────────────────────────────────────────────────
+function resetCipherMap(){C={...DEFAULT_C};buildR();buildTable();addLog('admin','Reset cipher map');}
 function changePin(who){
-  const field=document.getElementById(who==='user'?'new-upin':'new-apin');
-  const val=field.value.trim();
-  if(!/^\d{4}$/.test(val)){alert('PIN must be exactly 4 digits.');return;}
-  PINS[who]=val;
-  field.value='';
-  updatePinDisplay();
-  const n=document.getElementById('pin-notice');n.style.display='block';setTimeout(()=>n.style.display='none',2500);
-  addLog('admin',`Changed ${who} PIN`);
+  const f=document.getElementById(who==='user'?'new-upin':'new-apin');
+  const v=f.value.trim();
+  if(!/^\d{4}$/.test(v)){alert('PIN must be exactly 4 digits.');return;}
+  PINS[who]=v;f.value='';updatePinDisplay();
+  const n=document.getElementById('pin-notice');n.style.display='block';setTimeout(()=>n.style.display='none',2500);addLog('admin',`Changed ${who} PIN`);
 }
 function updatePinDisplay(){
-  // Show last 2 digits masked for reference
   document.getElementById('show-upin').textContent=PINS.user.slice(0,2)+'**';
   document.getElementById('show-apin').textContent=PINS.admin.slice(0,2)+'**';
 }
-
-// ─── Admin: Stats ─────────────────────────────────────────────────────────────
 function refreshStats(){
+  if(!document.getElementById('s-chars'))return;
   document.getElementById('s-chars').textContent=Object.keys(C).length;
   document.getElementById('s-uses').textContent=uses;
   document.getElementById('s-logins').textContent=loginAttempts;
 }
-
-// ─── Admin: System info ───────────────────────────────────────────────────────
 function populateSysInfo(){
-  // IP
-  fetch('https://api.ipify.org?format=json')
-    .then(r=>r.json()).then(d=>{document.getElementById('sys-ip').textContent=d.ip||'Unavailable';})
-    .catch(()=>{document.getElementById('sys-ip').textContent='Unavailable';});
-  // UA / platform
+  fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>document.getElementById('sys-ip').textContent=d.ip).catch(()=>document.getElementById('sys-ip').textContent='Unavailable');
   const ua=navigator.userAgent;
   const browsers=[['Chrome',/Chrome\/(\S+)/],['Firefox',/Firefox\/(\S+)/],['Safari',/Version\/(\S+).*Safari/],['Edge',/Edg\/(\S+)/]];
-  let bn='Unknown';
-  for(const[name,re]of browsers){const m=ua.match(re);if(m){bn=`${name} ${m[1]}`;break;}}
+  let bn='Unknown';for(const[name,re]of browsers){const m=ua.match(re);if(m){bn=`${name} ${m[1]}`;break;}}
   document.getElementById('sys-ua').textContent=bn;
   document.getElementById('sys-plat').textContent=navigator.platform||'Unknown';
   document.getElementById('sys-time').textContent=sessionStart.toLocaleTimeString();
   document.getElementById('sys-url').textContent=window.location.href;
   updatePinDisplay();
 }
-
-// ─── Admin: Activity Log ──────────────────────────────────────────────────────
-function addLog(r,action){
-  const t=new Date().toLocaleTimeString();
-  activityLog.unshift({t,r,action});
-  if(activityLog.length>50)activityLog.pop();
-  renderLog();
-}
+function addLog(r,action){const t=new Date().toLocaleTimeString();activityLog.unshift({t,r,action});if(activityLog.length>60)activityLog.pop();renderLog();}
 function renderLog(){
-  const tbody=document.getElementById('log-body');
-  if(!tbody)return;
+  const tbody=document.getElementById('log-body');if(!tbody)return;
   tbody.innerHTML='';
   activityLog.forEach(e=>{
     const tr=document.createElement('tr');
     const pill=e.r==='admin'?`<span class="badge-pill pill-admin">admin</span>`:e.r==='user'?`<span class="badge-pill pill-user">user</span>`:`<span style="color:#4a4f66;font-size:10px">${e.r}</span>`;
-    tr.innerHTML=`<td>${e.t}</td><td>${pill}</td><td class="${e.r==='admin'?'log-admin':'log-action'}">${e.action}</td>`;
-    tbody.appendChild(tr);
+    tr.innerHTML=`<td>${e.t}</td><td>${pill}</td><td>${e.action}</td>`;tbody.appendChild(tr);
   });
 }
 function clearLog(){activityLog=[];renderLog();addLog('admin','Cleared log');}
-
-// ─── Admin: Danger zone ───────────────────────────────────────────────────────
 function clearAll(){
-  document.getElementById('ei').value='';
-  document.getElementById('di').value='';
-  const eo=document.getElementById('eo');eo.textContent='Output will appear here';eo.className='output-box placeholder';
-  const do2=document.getElementById('do2');do2.textContent='Output will appear here';do2.className='output-box placeholder';
-  uses=0;refreshStats();addLog('admin','Cleared all fields');
+  ['ei','di'].forEach(id=>document.getElementById(id).value='');
+  ['eo','do2'].forEach(id=>{const el=document.getElementById(id);el.textContent='Output will appear here';el.className='output-box placeholder';});
+  resetCam();resetFile();uses=0;refreshStats();addLog('admin','Cleared all fields');
 }
 function factoryReset(){
-  if(!confirm('Reset ALL settings, PINs, and cipher map to factory defaults?'))return;
-  PINS={user:'5858',admin:'1212'};
-  C={...DEFAULT_C};buildReverse();buildTable();
-  uses=0;loginAttempts=0;activityLog=[];
-  renderLog();refreshStats();updatePinDisplay();
-  addLog('admin','Factory reset performed');
+  if(!confirm('Reset ALL settings, PINs, and cipher map to defaults?'))return;
+  PINS={user:'5858',admin:'1212'};C={...DEFAULT_C};buildR();buildTable();
+  uses=0;loginAttempts=0;activityLog=[];renderLog();refreshStats();updatePinDisplay();addLog('admin','Factory reset');
 }
 
-// ─── Idle auto-lock ───────────────────────────────────────────────────────────
-function resetIdleTimer(){
-  clearTimeout(idleTimer);
-  const tog=document.getElementById('tog-autolock');
-  if(tog&&tog.checked){
-    idleTimer=setTimeout(()=>{if(role)lockOut();},5*60*1000);
-  }
-}
-document.addEventListener('keydown',resetIdleTimer);
-document.addEventListener('click',resetIdleTimer);
-
-// ─── Init ─────────────────────────────────────────────────────────────────────
+// ── Idle ──────────────────────────────────────────────────────────────────────
+function resetIdleTimer(){clearTimeout(idleTimer);const tog=document.getElementById('tog-autolock');if(tog&&tog.checked)idleTimer=setTimeout(()=>{if(role)lockOut();},5*60*1000);}
+document.addEventListener('keydown',resetIdleTimer);document.addEventListener('click',resetIdleTimer);
 addLog('—','Page loaded');
 </script>
 </body>
