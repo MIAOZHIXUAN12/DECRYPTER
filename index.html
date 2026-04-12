@@ -1,670 +1,778 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cipher Vault</title>
+
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#0a0c12;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
-.shell{font-family:'Inter',sans-serif;background:#0f1117;border-radius:14px;overflow:hidden;min-height:580px;width:100%;max-width:420px}
-
-.login-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:580px;padding:40px 24px}
-.brand-mark{width:48px;height:48px;border-radius:12px;background:#1a1d27;border:1px solid #2a2d3a;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
-.brand-mark svg{width:22px;height:22px}
-.brand-name{font-size:18px;font-weight:600;color:#e8eaf0;letter-spacing:0.3px;margin-bottom:4px}
-.brand-sub{font-size:12px;color:#4a4f66;letter-spacing:0.5px;margin-bottom:32px}
-.login-card{background:#141720;border:1px solid #1e2130;border-radius:12px;padding:28px;width:100%;max-width:300px}
-.pin-label{font-size:11px;font-weight:500;color:#4a4f66;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;text-align:center}
-.pin-dots{display:flex;gap:12px;justify-content:center;margin-bottom:24px}
-.dot{width:12px;height:12px;border-radius:50%;border:1.5px solid #2a2d3a;background:transparent;transition:all 0.15s}
-.dot.filled{background:#6366f1;border-color:#6366f1}
-.dot.error{background:#ef4444;border-color:#ef4444;animation:sh 0.3s}
-.dot.success{background:#22c55e;border-color:#22c55e}
-.dot.admin-fill{background:#f59e0b;border-color:#f59e0b}
-@keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
-.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.nb{padding:13px 8px;border:1px solid #1e2130;border-radius:8px;background:#0f1117;color:#c8cad8;font-family:'Inter',sans-serif;font-size:15px;cursor:pointer;transition:all 0.1s;text-align:center}
-.nb:hover{background:#1a1d27;border-color:#2a2d3a;color:#e8eaf0}
-.nb:active{transform:scale(0.96)}
-.nb.del{color:#4a4f66;font-size:12px}
-.nb.del:hover{color:#ef4444;border-color:#ef4444}
-.err-line{font-size:11px;color:#ef4444;text-align:center;margin-top:14px;height:16px;letter-spacing:0.3px}
-.ok-line{font-size:11px;color:#22c55e;text-align:center;margin-top:14px;height:16px}
-.admin-line{font-size:11px;color:#f59e0b;text-align:center;margin-top:14px;height:16px}
-
+.shell{font-family:'Inter',sans-serif;background:#0b0d14;border-radius:16px;overflow:hidden;min-height:580px;position:relative}
+.login-bg{position:absolute;inset:0;pointer-events:none;z-index:0}
+.orb1{position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,0.18) 0%,transparent 70%);top:-80px;left:-60px}
+.orb2{position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,0.12) 0%,transparent 70%);bottom:-60px;right:-40px}
+.grid-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(99,102,241,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,0.04) 1px,transparent 1px);background-size:40px 40px}
+.screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:580px;padding:40px 24px;position:relative;z-index:1}
+.brand-mark{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#1e2040,#2d1f4e);border:1px solid rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center;margin-bottom:18px;box-shadow:0 0 24px rgba(99,102,241,0.2),inset 0 1px 0 rgba(255,255,255,0.08)}
+.brand-mark svg{width:24px;height:24px}
+.brand-name{font-size:20px;font-weight:700;color:#f0f1f8;margin-bottom:5px;letter-spacing:-0.3px}
+.brand-sub{font-size:12px;color:#4a4f6a;margin-bottom:32px;letter-spacing:0.3px}
+.login-card{background:rgba(20,23,35,0.85);border:1px solid rgba(99,102,241,0.2);border-radius:16px;padding:28px;width:100%;max-width:320px;display:flex;flex-direction:column;gap:16px;backdrop-filter:blur(10px);box-shadow:0 24px 48px rgba(0,0,0,0.4),inset 0 0 0 1px rgba(255,255,255,0.04)}
+.fl{font-size:11px;font-weight:600;color:#6b71a0;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.input-wrap{position:relative}
+.input-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;opacity:0.4;pointer-events:none}
+input[type=text],input[type=password]{width:100%;background:rgba(10,12,20,0.8);border:1px solid rgba(99,102,241,0.2);border-radius:10px;color:#e0e2f0;font-family:'Inter',sans-serif;font-size:14px;padding:11px 12px 11px 36px;transition:all 0.2s}
+input:focus{outline:none;border-color:rgba(99,102,241,0.6);background:rgba(10,12,20,0.95);box-shadow:0 0 0 3px rgba(99,102,241,0.1)}
+input::placeholder{color:#2a2d4a}
+.login-btn{padding:12px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:10px;transition:all 0.2s;width:100%;letter-spacing:0.3px;box-shadow:0 4px 16px rgba(99,102,241,0.35)}
+.login-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(99,102,241,0.5)}
+.login-btn:active{transform:scale(0.98)}
+.login-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.err-msg{font-size:11px;color:#f87171;text-align:center;min-height:16px}
+.ok-msg{font-size:11px;color:#4ade80;text-align:center;min-height:16px}
 .main-wrap{display:none;flex-direction:column;min-height:580px}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #1e2130;background:#0f1117}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(11,13,20,0.95)}
 .topbar-left{display:flex;align-items:center;gap:10px}
-.topbar-icon{width:28px;height:28px;border-radius:7px;background:#1a1d27;border:1px solid #2a2d3a;display:flex;align-items:center;justify-content:center}
-.topbar-icon svg{width:13px;height:13px}
-.topbar-title{font-size:14px;font-weight:500;color:#e8eaf0}
-.badge{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;letter-spacing:0.3px}
-.badge-secure{background:#0d1f13;border:1px solid #1a3520;color:#22c55e}
-.badge-admin{background:#1f1500;border:1px solid #3a2800;color:#f59e0b}
-.badge-dot{width:6px;height:6px;border-radius:50%}
-.badge-secure .badge-dot{background:#22c55e}
-.badge-admin .badge-dot{background:#f59e0b}
-.lock-btn{padding:5px 12px;border-radius:6px;background:transparent;border:1px solid #1e2130;color:#4a4f66;font-family:'Inter',sans-serif;font-size:11px;cursor:pointer;transition:all 0.1s}
-.lock-btn:hover{border-color:#2a2d3a;color:#c8cad8}
-.content{padding:20px;flex:1;display:flex;flex-direction:column;gap:16px;overflow-y:auto;max-height:calc(100vh - 70px)}
-.seg{display:flex;background:#141720;border:1px solid #1e2130;border-radius:8px;overflow:hidden;flex-shrink:0}
-.seg-btn{flex:1;padding:9px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.2px;border:none;background:transparent;color:#4a4f66;cursor:pointer;transition:all 0.15s}
-.seg-btn.on{background:#6366f1;color:#fff}
-.seg-btn.on-admin{background:#f59e0b;color:#0f1117}
-.seg-btn:not(:last-child){border-right:1px solid #1e2130}
-.fl{font-size:11px;font-weight:500;color:#4a4f66;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:6px}
-textarea{width:100%;background:#141720;border:1px solid #1e2130;border-radius:8px;color:#c8cad8;font-family:'JetBrains Mono',monospace;font-size:12px;padding:12px;resize:vertical;min-height:80px;line-height:1.6}
-textarea:focus{outline:none;border-color:#6366f155}
-textarea::placeholder{color:#2a2d3a}
-input[type=text],input[type=password]{width:100%;background:#141720;border:1px solid #1e2130;border-radius:8px;color:#c8cad8;font-family:'JetBrains Mono',monospace;font-size:12px;padding:10px 12px;outline:none;transition:border-color 0.15s}
-input[type=text]:focus,input[type=password]:focus{border-color:#f59e0b55}
-input::placeholder{color:#2a2d3a}
-.run-btn{padding:11px;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;border-radius:8px;transition:all 0.15s;width:100%}
-.run-btn-user{background:#6366f1;color:#fff}
-.run-btn-user:hover{background:#5254cc}
-.run-btn-admin{background:#f59e0b;color:#0f1117}
-.run-btn-admin:hover{background:#d97706}
+.t-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#1e2040,#2d1f4e);border:1px solid rgba(99,102,241,0.3);display:flex;align-items:center;justify-content:center}
+.t-icon svg{width:13px;height:13px}
+.t-title{font-size:14px;font-weight:600;color:#e0e2f0;letter-spacing:-0.2px}
+.badge{display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;font-size:11px;font-weight:600}
+.b-sec{background:rgba(13,31,19,0.9);border:1px solid rgba(74,222,128,0.25);color:#4ade80}
+.b-adm{background:rgba(31,21,0,0.9);border:1px solid rgba(245,158,11,0.3);color:#fbbf24}
+.bdot{width:6px;height:6px;border-radius:50%;animation:pulse 2s ease-in-out infinite}
+.b-sec .bdot{background:#4ade80}.b-adm .bdot{background:#fbbf24}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.lock-btn{padding:6px 13px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.08);color:#6b71a0;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;cursor:pointer;transition:all 0.15s}
+.lock-btn:hover{border-color:rgba(255,255,255,0.15);color:#c8cad8}
+.nav{display:flex;background:rgba(15,17,28,0.98);border-bottom:1px solid rgba(255,255,255,0.05);overflow-x:auto;padding:0 4px}
+.nav-btn{padding:12px 16px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;border:none;background:transparent;color:#4a4f6a;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.2s}
+.nav-btn:hover{color:#a8abcf}
+.nav-btn.on{color:#818cf8;border-bottom-color:#818cf8;font-weight:600}
+.nav-btn.on-a{color:#fbbf24;border-bottom-color:#fbbf24;font-weight:600}
+.panel{display:none;padding:20px;flex-direction:column;gap:16px}
+.panel.active{display:flex}
+.field-card{background:rgba(20,23,35,0.6);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+textarea{width:100%;background:rgba(10,12,20,0.7);border:1px solid rgba(99,102,241,0.15);border-radius:10px;color:#d0d2e8;font-family:'JetBrains Mono',monospace;font-size:12px;padding:11px 13px;resize:vertical;min-height:76px;line-height:1.7;transition:all 0.2s}
+textarea:focus{outline:none;border-color:rgba(99,102,241,0.5);box-shadow:0 0 0 3px rgba(99,102,241,0.08)}
+textarea::placeholder{color:#2a2d4a}
+.run-btn{padding:11px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;border-radius:10px;transition:all 0.2s;width:100%;letter-spacing:0.2px}
+.rb-u{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 4px 14px rgba(99,102,241,0.35)}
+.rb-u:hover{box-shadow:0 6px 20px rgba(99,102,241,0.5);transform:translateY(-1px)}
+.rb-a{background:linear-gradient(135deg,#f59e0b,#f97316);color:#0b0d14;box-shadow:0 4px 14px rgba(245,158,11,0.3)}
+.rb-a:hover{box-shadow:0 6px 20px rgba(245,158,11,0.45);transform:translateY(-1px)}
 .run-btn:active{transform:scale(0.98)}
-.output-box{background:#141720;border:1px solid #1e2130;border-radius:8px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#c8cad8;word-break:break-all;line-height:1.8;min-height:56px}
-.output-box.placeholder{color:#2a2d3a}
-.copy-row{display:flex;justify-content:flex-end;margin-top:4px}
-.copy-btn{padding:5px 12px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;cursor:pointer;background:transparent;color:#4a4f66;border:1px solid #1e2130;border-radius:6px;transition:all 0.1s}
-.copy-btn:hover{color:#c8cad8;border-color:#2a2d3a}
+.out-box{background:rgba(10,12,20,0.7);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:13px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#c8cad8;word-break:break-all;line-height:1.9;min-height:52px;transition:all 0.2s}
+.out-box.ph{color:#2a2d4a;font-style:italic}
+.out-box.has-content{border-color:rgba(99,102,241,0.2)}
+.row-end{display:flex;justify-content:flex-end;margin-top:4px;gap:6px}
+.sm-btn{padding:5px 13px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;cursor:pointer;background:rgba(255,255,255,0.04);color:#6b71a0;border:1px solid rgba(255,255,255,0.08);border-radius:7px;transition:all 0.15s}
+.sm-btn:hover{color:#e0e2f0;border-color:rgba(255,255,255,0.15);background:rgba(255,255,255,0.08)}
+.hist-item{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);gap:10px}
+.hist-item:last-child{border-bottom:none}
+.hist-dir{font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;white-space:nowrap;letter-spacing:0.5px}
+.hd-enc{background:rgba(99,102,241,0.15);color:#818cf8;border:1px solid rgba(99,102,241,0.2)}
+.hd-dec{background:rgba(74,222,128,0.1);color:#4ade80;border:1px solid rgba(74,222,128,0.2)}
+.hist-text{font-family:'JetBrains Mono',monospace;font-size:11px;color:#c8cad8;flex:1;word-break:break-all;line-height:1.5}
+.hist-time{font-size:10px;color:#4a4f6a;white-space:nowrap}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat-card{background:linear-gradient(135deg,rgba(20,23,35,0.9),rgba(15,17,28,0.9));border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(245,158,11,0.4),transparent)}
+.stat-v{font-size:24px;font-weight:700;color:#fbbf24;margin-bottom:3px}
+.stat-l{font-size:10px;color:#4a4f6a;letter-spacing:0.8px;text-transform:uppercase;font-weight:500}
+.sec-title{font-size:11px;font-weight:700;color:#fbbf24;letter-spacing:1.5px;text-transform:uppercase;padding-bottom:9px;border-bottom:1px solid rgba(245,158,11,0.15);margin-bottom:4px;display:flex;align-items:center;gap:7px}
+.sec-title::before{content:'';width:3px;height:12px;background:linear-gradient(180deg,#fbbf24,#f59e0b);border-radius:2px;display:inline-block}
+.tbl-wrap{max-height:200px;overflow-y:auto;border-radius:10px;border:1px solid rgba(255,255,255,0.07)}
+.tbl-wrap::-webkit-scrollbar{width:4px}
+.tbl-wrap::-webkit-scrollbar-thumb{background:rgba(99,102,241,0.3);border-radius:2px}
+table{width:100%;border-collapse:collapse}
+th{font-size:10px;font-weight:600;color:#4a4f6a;letter-spacing:0.8px;text-transform:uppercase;padding:8px 12px;text-align:left;background:rgba(11,13,20,0.9);position:sticky;top:0;border-bottom:1px solid rgba(255,255,255,0.05)}
+td{font-size:12px;color:#c8cad8;padding:9px 12px;border-top:1px solid rgba(255,255,255,0.03);vertical-align:middle}
+tr:hover td{background:rgba(99,102,241,0.05)}
+td.key{color:#fbbf24;font-weight:600;font-family:'JetBrains Mono',monospace}
+.tag{display:inline-block;font-size:10px;padding:3px 9px;border-radius:5px;font-weight:600}
+.tag-user{background:rgba(99,102,241,0.15);color:#818cf8;border:1px solid rgba(99,102,241,0.2)}
+.tag-adm{background:rgba(245,158,11,0.12);color:#fbbf24;border:1px solid rgba(245,158,11,0.2)}
+.tag-letter{background:rgba(99,102,241,0.12);color:#818cf8;border:1px solid rgba(99,102,241,0.18)}
+.tag-num{background:rgba(74,222,128,0.1);color:#4ade80;border:1px solid rgba(74,222,128,0.18)}
+.danger-btn{padding:10px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;background:rgba(239,68,68,0.06);color:#f87171;border:1px solid rgba(239,68,68,0.2);border-radius:10px;transition:all 0.15s;width:100%}
+.danger-btn:hover{background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.35)}
+.empty-state{color:#4a4f6a;font-size:12px;text-align:center;padding:24px 0;font-style:italic}
+.hint{font-size:11px;color:#4a4f6a;line-height:1.7}
+.char-counter{font-size:10px;color:#4a4f6a;text-align:right;margin-top:5px}
+.search-row{display:flex;gap:8px}
+.search-row input{flex:1;background:rgba(10,12,20,0.7);border:1px solid rgba(99,102,241,0.15);border-radius:9px;color:#d0d2e8;font-family:'Inter',sans-serif;font-size:12px;padding:9px 12px;transition:all 0.2s}
+.search-row input:focus{outline:none;border-color:rgba(99,102,241,0.5);box-shadow:0 0 0 3px rgba(99,102,241,0.08)}
+.search-row input::placeholder{color:#2a2d4a}
+.info-row{display:flex;gap:8px;flex-wrap:wrap}
+.info-pill{padding:4px 11px;border-radius:6px;background:rgba(20,23,35,0.8);border:1px solid rgba(255,255,255,0.07);font-size:11px;color:#4a4f6a;font-weight:500}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.loading-row{font-size:12px;color:#4a4f6a;text-align:center;padding:16px 0}
+.action-row{display:flex;gap:5px}
+.action-btn{padding:4px 10px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;cursor:pointer;border:none;border-radius:6px;transition:all 0.15s}
+.ab-promote{background:rgba(245,158,11,0.12);color:#fbbf24;border:1px solid rgba(245,158,11,0.2)}
+.ab-promote:hover{background:rgba(245,158,11,0.22)}
+.ab-demote{background:rgba(99,102,241,0.12);color:#818cf8;border:1px solid rgba(99,102,241,0.2)}
+.ab-demote:hover{background:rgba(99,102,241,0.22)}
+.ab-del{background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2)}
+.ab-del:hover{background:rgba(239,68,68,0.2)}
+select{width:100%;background:rgba(10,12,20,0.7);border:1px solid rgba(99,102,241,0.15);border-radius:10px;color:#d0d2e8;font-family:'Inter',sans-serif;font-size:13px;padding:11px 12px;transition:all 0.2s}
+select:focus{outline:none;border-color:rgba(99,102,241,0.5);box-shadow:0 0 0 3px rgba(99,102,241,0.08)}
+.help-card{background:linear-gradient(135deg,rgba(20,23,35,0.8),rgba(15,17,28,0.8));border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden}
+.help-card::after{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,#6366f1,#8b5cf6)}
+.help-card.green::after{background:linear-gradient(180deg,#22c55e,#16a34a)}
+.help-card-title{font-size:12px;font-weight:600;color:#818cf8;padding-left:10px}
+.help-card.green .help-card-title{color:#4ade80}
+.help-card-body{font-size:11px;color:#4a4f6a;line-height:1.7;padding-left:10px}
+.add-msg-ok{font-size:11px;color:#4ade80;min-height:16px}
+.add-msg-err{font-size:11px;color:#f87171;min-height:16px}
 
-/* ── SCAN PANEL ── */
-.mode-toggle{display:flex;background:#0f1117;border:1px solid #1e2130;border-radius:8px;overflow:hidden}
-.mode-btn{flex:1;padding:9px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;border:none;background:transparent;color:#4a4f66;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:5px}
-.mode-btn.active{background:#22c55e18;color:#22c55e;box-shadow:inset 0 -2px 0 #22c55e}
-.mode-btn:not(:last-child){border-right:1px solid #1e2130}
+/* ===== LEARN TAB ===== */
+.learn-header{background:linear-gradient(135deg,rgba(30,32,64,0.9),rgba(45,31,78,0.7));border:1px solid rgba(99,102,241,0.25);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.learn-title{font-size:15px;font-weight:700;color:#e0e2f0;letter-spacing:-0.2px}
+.learn-desc{font-size:12px;color:#6b71a0;line-height:1.6}
+.xp-bar-wrap{display:flex;flex-direction:column;gap:5px}
+.xp-row{display:flex;justify-content:space-between;align-items:center}
+.xp-label{font-size:11px;color:#818cf8;font-weight:600}
+.xp-num{font-size:11px;color:#4a4f6a}
+.xp-bar{height:6px;background:rgba(99,102,241,0.15);border-radius:3px;overflow:hidden}
+.xp-fill{height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:3px;transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1)}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mode-card{background:rgba(20,23,35,0.7);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;gap:6px}
+.mode-card:hover{border-color:rgba(99,102,241,0.35);background:rgba(30,32,50,0.8);transform:translateY(-1px)}
+.mode-card.active-mode{border-color:rgba(99,102,241,0.5);background:rgba(25,27,55,0.9);box-shadow:0 0 16px rgba(99,102,241,0.15)}
+.mode-icon{font-size:20px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(99,102,241,0.12);border-radius:8px;border:1px solid rgba(99,102,241,0.2)}
+.mode-name{font-size:12px;font-weight:600;color:#c8cad8}
+.mode-desc{font-size:11px;color:#4a4f6a;line-height:1.5}
+.learn-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ls-card{background:rgba(15,17,28,0.8);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:10px;text-align:center}
+.ls-v{font-size:18px;font-weight:700;margin-bottom:2px}
+.ls-l{font-size:10px;color:#4a4f6a;text-transform:uppercase;letter-spacing:0.5px}
+.ls-streak .ls-v{color:#f97316}
+.ls-correct .ls-v{color:#4ade80}
+.ls-best .ls-v{color:#818cf8}
 
-.camera-zone{position:relative;background:#0a0c12;border:2px dashed #1e2130;border-radius:10px;overflow:hidden;width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color 0.2s}
-.camera-zone:hover{border-color:#6366f144}
-.camera-zone video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
-.camera-zone canvas{display:none}
-.camera-zone .preview-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
-.cam-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
-.cam-placeholder svg{width:34px;height:34px;opacity:0.25}
-.cam-placeholder .ph-title{font-size:13px;color:#4a4f66;font-weight:500}
-.cam-placeholder .ph-sub{font-size:11px;color:#2a2d3a}
+/* flashcard */
+.flashcard-area{display:flex;flex-direction:column;align-items:center;gap:16px}
+.fc-progress{width:100%;display:flex;align-items:center;gap:10px}
+.fc-bar{flex:1;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
+.fc-bar-fill{height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:2px;transition:width 0.3s ease}
+.fc-count{font-size:11px;color:#4a4f6a;white-space:nowrap}
+.card-scene{width:100%;perspective:1000px}
+.card-inner{position:relative;width:100%;transform-style:preserve-3d;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);cursor:pointer}
+.card-inner.flipped{transform:rotateY(180deg)}
+.card-face{background:linear-gradient(135deg,rgba(25,27,50,0.95),rgba(20,22,45,0.95));border:1px solid rgba(99,102,241,0.25);border-radius:16px;padding:32px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:160px;gap:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.card-back{position:absolute;top:0;left:0;right:0;bottom:0;transform:rotateY(180deg);background:linear-gradient(135deg,rgba(25,45,30,0.95),rgba(20,35,25,0.95));border:1px solid rgba(74,222,128,0.25);border-radius:16px;padding:32px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.card-hint{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase}
+.card-face .card-hint{color:#4a4f6a}
+.card-back .card-hint{color:rgba(74,222,128,0.5)}
+.card-main{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:#e0e2f0;letter-spacing:1px;text-align:center}
+.card-back .card-main{color:#4ade80;font-size:18px;word-break:break-all;line-height:1.4}
+.card-tap{font-size:11px;color:#4a4f6a;margin-top:4px}
+.card-back .card-tap{color:rgba(74,222,128,0.5)}
+.card-nav{display:flex;gap:10px;width:100%;justify-content:center}
+.cn-btn{flex:1;max-width:120px;padding:10px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:none;border-radius:9px;transition:all 0.15s}
+.cn-bad{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.2)}
+.cn-bad:hover{background:rgba(239,68,68,0.22)}
+.cn-ok{background:rgba(245,158,11,0.12);color:#fbbf24;border:1px solid rgba(245,158,11,0.2)}
+.cn-ok:hover{background:rgba(245,158,11,0.22)}
+.cn-good{background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.2)}
+.cn-good:hover{background:rgba(74,222,128,0.22)}
 
-.scan-overlay{position:absolute;inset:0;background:#0a0c12cc;backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;z-index:10}
-.scan-overlay.on{display:flex}
-.spin{width:38px;height:38px;border:2.5px solid #1e2130;border-top-color:#6366f1;border-radius:50%;animation:spin 0.7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.scan-msg{font-size:11px;color:#6366f1;letter-spacing:0.5px;animation:blink 1.4s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:0.4}50%{opacity:1}}
+/* quiz */
+.quiz-area{display:flex;flex-direction:column;gap:14px}
+.quiz-q-card{background:linear-gradient(135deg,rgba(25,27,50,0.95),rgba(20,22,45,0.95));border:1px solid rgba(99,102,241,0.25);border-radius:14px;padding:20px;text-align:center}
+.quiz-q-label{font-size:10px;font-weight:600;color:#4a4f6a;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.quiz-q-text{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#e0e2f0;letter-spacing:1px}
+.quiz-q-sub{font-size:11px;color:#4a4f6a;margin-top:6px}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.qopt{padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;cursor:pointer;background:rgba(20,23,35,0.7);color:#c8cad8;border:1px solid rgba(255,255,255,0.08);border-radius:10px;transition:all 0.15s;text-align:center;line-height:1.4}
+.qopt:hover:not(:disabled){background:rgba(99,102,241,0.12);border-color:rgba(99,102,241,0.3);color:#e0e2f0}
+.qopt:disabled{cursor:not-allowed}
+.qopt.correct{background:rgba(74,222,128,0.15);border-color:rgba(74,222,128,0.4);color:#4ade80}
+.qopt.wrong{background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:#f87171}
+.quiz-feedback{text-align:center;font-size:13px;font-weight:600;min-height:20px;padding:4px 0}
+.quiz-next{padding:10px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:9px;transition:all 0.2s;width:100%;display:none}
+.quiz-next:hover{transform:translateY(-1px)}
 
-.cam-btns{display:flex;gap:8px;margin-top:8px}
-.cam-btn{flex:1;padding:9px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;border:1px solid #1e2130;border-radius:8px;background:#141720;color:#c8cad8;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:5px}
-.cam-btn:hover{background:#1a1d27;border-color:#2a2d3a}
-.cam-btn.green{background:#22c55e;border-color:#22c55e;color:#fff}
-.cam-btn.green:hover{background:#16a34a}
-.cam-btn.red{color:#ef4444;border-color:#3a1a1a}
-.cam-btn.red:hover{background:#1f0a0a}
-.cam-btn:disabled{opacity:0.4;cursor:not-allowed}
+/* type challenge */
+.type-area{display:flex;flex-direction:column;gap:12px}
+.type-q-card{background:linear-gradient(135deg,rgba(25,27,50,0.95),rgba(20,22,45,0.95));border:1px solid rgba(99,102,241,0.25);border-radius:14px;padding:20px;text-align:center}
+.type-q-text{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#e0e2f0;letter-spacing:2px;word-break:break-all;line-height:1.5}
+.type-q-label{font-size:10px;font-weight:600;color:#4a4f6a;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.type-input{width:100%;background:rgba(10,12,20,0.8);border:1px solid rgba(99,102,241,0.2);border-radius:10px;color:#e0e2f0;font-family:'JetBrains Mono',monospace;font-size:16px;padding:12px;text-align:center;letter-spacing:2px;transition:all 0.2s}
+.type-input:focus{outline:none;border-color:rgba(99,102,241,0.6);box-shadow:0 0 0 3px rgba(99,102,241,0.1)}
+.type-input.correct{border-color:rgba(74,222,128,0.5);background:rgba(74,222,128,0.05)}
+.type-input.wrong{border-color:rgba(239,68,68,0.5);background:rgba(239,68,68,0.05);animation:sh 0.3s}
+@keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.type-feedback{text-align:center;font-size:12px;font-weight:600;min-height:18px}
+.type-submit{padding:10px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:9px;transition:all 0.2s;width:100%}
+.type-submit:hover{transform:translateY(-1px)}
+.type-hint-btn{background:transparent;border:none;color:#4a4f6a;font-family:'Inter',sans-serif;font-size:11px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;width:100%;text-align:center;padding:2px}
+.type-hint-btn:hover{color:#818cf8}
 
-.ocr-box{background:#0d1f13;border:1px solid #1a3520;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:6px}
-.ocr-lbl{font-size:10px;font-weight:600;color:#22c55e;letter-spacing:0.8px;text-transform:uppercase}
-.ocr-txt{font-family:'JetBrains Mono',monospace;font-size:11px;color:#c8cad8;line-height:1.8;word-break:break-all}
-.ocr-hint{font-size:10px;color:#4a4f66;font-style:italic}
-.err-box{background:#1f0a0a;border:1px solid #3a1a1a;border-radius:8px;padding:10px 12px;font-size:11px;color:#ef4444;line-height:1.6}
-.ok-box{background:#0d1f13;border:1px solid #1a3520;border-radius:8px;padding:10px 12px;font-size:11px;color:#22c55e}
+/* results */
+.result-card{background:linear-gradient(135deg,rgba(25,27,50,0.95),rgba(20,22,45,0.95));border:1px solid rgba(99,102,241,0.25);border-radius:16px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.result-score{font-size:48px;font-weight:700;color:#818cf8}
+.result-label{font-size:14px;color:#6b71a0}
+.result-msg{font-size:16px;font-weight:600;color:#e0e2f0}
+.result-detail{font-size:12px;color:#4a4f6a;line-height:1.7}
+.result-actions{display:flex;gap:10px;width:100%}
+.ra-btn{flex:1;padding:10px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:none;border-radius:9px;transition:all 0.2s}
+.ra-retry{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff}
+.ra-retry:hover{transform:translateY(-1px)}
+.ra-menu{background:rgba(255,255,255,0.06);color:#c8cad8;border:1px solid rgba(255,255,255,0.1)}
+.ra-menu:hover{background:rgba(255,255,255,0.1)}
 
-/* ADMIN */
-.admin-panel{display:none;flex-direction:column;gap:18px}
-.admin-section-title{font-size:11px;font-weight:600;color:#f59e0b;letter-spacing:1px;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid #2a1f00}
-.cipher-table{width:100%;border-collapse:collapse}
-.cipher-table th{font-size:10px;font-weight:500;color:#4a4f66;letter-spacing:0.8px;text-transform:uppercase;padding:6px 8px;text-align:left;border-bottom:1px solid #1e2130}
-.cipher-table td{font-family:'JetBrains Mono',monospace;font-size:11px;color:#c8cad8;padding:5px 8px;border-bottom:1px solid #1a1d27;vertical-align:middle}
-.cipher-table tr:hover td{background:#141720}
-.cipher-table td:first-child{color:#f59e0b;font-weight:500}
-.cipher-edit{background:transparent;border:none;border-bottom:1px solid #2a2d3a;color:#c8cad8;font-family:'JetBrains Mono',monospace;font-size:11px;width:100%;padding:2px 4px;outline:none}
-.cipher-edit:focus{border-bottom-color:#f59e0b}
-.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.stat-card{background:#141720;border:1px solid #1e2130;border-radius:8px;padding:12px}
-.stat-val{font-size:20px;font-weight:600;color:#f59e0b;margin-bottom:2px}
-.stat-lbl{font-size:10px;color:#4a4f66;letter-spacing:0.5px}
-.table-wrap{max-height:200px;overflow-y:auto;border-radius:8px;border:1px solid #1e2130}
-.table-wrap::-webkit-scrollbar{width:4px}
-.table-wrap::-webkit-scrollbar-track{background:#0f1117}
-.table-wrap::-webkit-scrollbar-thumb{background:#2a2d3a;border-radius:2px}
-.reset-btn{padding:9px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;background:transparent;color:#ef4444;border:1px solid #3a1a1a;border-radius:8px;transition:all 0.1s;width:100%}
-.reset-btn:hover{background:#1f0a0a}
-.save-btn{padding:9px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;background:#f59e0b;color:#0f1117;border:none;border-radius:8px;transition:all 0.1s;width:100%}
-.save-btn:hover{background:#d97706}
-.inline-row{display:flex;gap:8px;align-items:flex-end}
-.field-group{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
-.log-table{width:100%;border-collapse:collapse}
-.log-table th{font-size:10px;font-weight:500;color:#4a4f66;letter-spacing:0.8px;text-transform:uppercase;padding:5px 8px;text-align:left;border-bottom:1px solid #1e2130}
-.log-table td{font-family:'JetBrains Mono',monospace;font-size:10px;color:#c8cad8;padding:4px 8px;border-bottom:1px solid #1a1d27}
-.badge-pill{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:500}
-.pill-user{background:#1a1f3a;color:#6366f1}
-.pill-admin{background:#1f1500;color:#f59e0b}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.info-card{background:#141720;border:1px solid #1e2130;border-radius:8px;padding:10px 12px}
-.info-card .info-lbl{font-size:10px;color:#4a4f66;letter-spacing:0.5px;margin-bottom:4px}
-.info-card .info-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:#c8cad8;word-break:break-all}
-.toggle-row{display:flex;align-items:center;justify-content:space-between;background:#141720;border:1px solid #1e2130;border-radius:8px;padding:10px 14px}
-.toggle-row span{font-size:12px;color:#c8cad8}
-.tog-wrap{position:relative;width:38px;height:20px}
-.tog-wrap input{opacity:0;width:0;height:0}
-.slider{position:absolute;inset:0;background:#2a2d3a;border-radius:20px;cursor:pointer;transition:.2s}
-.slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#4a4f66;border-radius:50%;transition:.2s}
-.tog-wrap input:checked+.slider{background:#2a1f00}
-.tog-wrap input:checked+.slider:before{background:#f59e0b;transform:translateX(18px)}
-.green-notice{background:#0d1f13;border:1px solid #1a3520;border-radius:8px;padding:10px 12px;font-size:11px;color:#22c55e}
+.streak-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.2);font-size:11px;font-weight:600;color:#f97316}
 </style>
-</head>
-<body>
-<div class="shell">
 
-<!-- LOGIN -->
-<div class="login-wrap" id="login">
+<div class="shell">
+<div class="login-bg"><div class="orb1"></div><div class="orb2"></div><div class="grid-lines"></div></div>
+
+<div class="screen" id="login-screen">
   <div class="brand-mark">
     <svg viewBox="0 0 22 22" fill="none">
-      <rect x="3" y="10" width="16" height="10" rx="2" stroke="#6366f1" stroke-width="1.5" fill="#6366f111"/>
-      <path d="M7 10V7a4 4 0 0 1 8 0v3" stroke="#6366f1" stroke-width="1.5" stroke-linecap="round"/>
-      <circle cx="11" cy="15" r="1.5" fill="#6366f1"/>
-      <line x1="11" y1="16.5" x2="11" y2="18.5" stroke="#6366f1" stroke-width="1.5" stroke-linecap="round"/>
+      <rect x="3" y="10" width="16" height="10" rx="2" stroke="#818cf8" stroke-width="1.5" fill="rgba(99,102,241,0.15)"/>
+      <path d="M7 10V7a4 4 0 0 1 8 0v3" stroke="#818cf8" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="11" cy="15" r="1.5" fill="#818cf8"/>
+      <line x1="11" y1="16.5" x2="11" y2="18.5" stroke="#818cf8" stroke-width="1.5" stroke-linecap="round"/>
     </svg>
   </div>
   <div class="brand-name">Cipher Vault</div>
-  <div class="brand-sub" id="login-sub">Enter your PIN to continue</div>
+  <div class="brand-sub">Secure message encryption</div>
   <div class="login-card">
-    <div class="pin-label">Access PIN</div>
-    <div class="pin-dots">
-      <div class="dot" id="d0"></div><div class="dot" id="d1"></div>
-      <div class="dot" id="d2"></div><div class="dot" id="d3"></div>
+    <div><div class="fl">Username</div>
+      <div class="input-wrap">
+        <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="2.5" stroke="#818cf8" stroke-width="1.3"/><path d="M2 12c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="#818cf8" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <input type="text" id="un" placeholder="Enter username" autocomplete="off"/>
+      </div>
     </div>
-    <div class="numpad">
-      <button class="nb" onclick="ap('1')">1</button><button class="nb" onclick="ap('2')">2</button><button class="nb" onclick="ap('3')">3</button>
-      <button class="nb" onclick="ap('4')">4</button><button class="nb" onclick="ap('5')">5</button><button class="nb" onclick="ap('6')">6</button>
-      <button class="nb" onclick="ap('7')">7</button><button class="nb" onclick="ap('8')">8</button><button class="nb" onclick="ap('9')">9</button>
-      <button class="nb del" onclick="dp()">⌫</button><button class="nb" onclick="ap('0')">0</button><button class="nb" style="opacity:0;pointer-events:none"></button>
+    <div><div class="fl">Password</div>
+      <div class="input-wrap">
+        <svg viewBox="0 0 14 14" fill="none"><rect x="2" y="6" width="10" height="7" rx="1.5" stroke="#818cf8" stroke-width="1.3"/><path d="M5 6V4.5a2 2 0 0 1 4 0V6" stroke="#818cf8" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <input type="password" id="pw" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      </div>
     </div>
-    <div id="msg" class="err-line"></div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Sign in</button>
+    <div id="login-msg" class="err-msg"></div>
   </div>
 </div>
 
-<!-- MAIN -->
 <div class="main-wrap" id="main">
   <div class="topbar">
     <div class="topbar-left">
-      <div class="topbar-icon">
-        <svg viewBox="0 0 13 13" fill="none"><rect x="1" y="5" width="11" height="7" rx="1.5" stroke="#6366f1" stroke-width="1.2" fill="#6366f111"/><path d="M4 5V3.5a2.5 2.5 0 0 1 5 0V5" stroke="#6366f1" stroke-width="1.2" stroke-linecap="round"/><circle cx="6.5" cy="8.5" r="1" fill="#6366f1"/></svg>
+      <div class="t-icon">
+        <svg viewBox="0 0 13 13" fill="none">
+          <rect x="1" y="5" width="11" height="7" rx="1.5" stroke="#818cf8" stroke-width="1.2" fill="rgba(99,102,241,0.15)"/>
+          <path d="M4 5V3.5a2.5 2.5 0 0 1 5 0V5" stroke="#818cf8" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="6.5" cy="8.5" r="1" fill="#818cf8"/>
+        </svg>
       </div>
-      <span class="topbar-title">Cipher Vault</span>
+      <span class="t-title">Cipher Vault</span>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
-      <div id="status-badge" class="badge badge-secure"><div class="badge-dot"></div><span id="badge-txt">Secure</span></div>
-      <button class="lock-btn" onclick="lockOut()">Lock</button>
+      <div id="sbadge" class="badge b-sec"><div class="bdot"></div><span id="btxt">User</span></div>
+      <button class="lock-btn" onclick="logout()">Sign out</button>
+    </div>
+  </div>
+  <div class="nav" id="nav"></div>
+
+  <!-- ENCRYPT -->
+  <div class="panel active" id="p-enc">
+    <div class="field-card"><div class="fl">Message</div><textarea id="ei" placeholder="Type your secret message..." oninput="document.getElementById('enc-cnt').textContent=this.value.length+' chars'"></textarea><div class="char-counter" id="enc-cnt">0 chars</div></div>
+    <button class="run-btn rb-u" onclick="enc()">Encrypt message</button>
+    <div class="field-card"><div class="fl">Encrypted output</div><div class="out-box ph" id="eo">Output will appear here</div><div class="row-end"><button class="sm-btn" onclick="cp('eo')">Copy</button></div></div>
+  </div>
+
+  <!-- DECRYPT -->
+  <div class="panel" id="p-dec">
+    <div class="field-card"><div class="fl">Encrypted code</div><textarea id="di" placeholder="Paste cipher code here..."></textarea></div>
+    <button class="run-btn rb-u" onclick="dec()">Decrypt message</button>
+    <div class="field-card"><div class="fl">Decoded message</div><div class="out-box ph" id="do2">Output will appear here</div><div class="row-end"><button class="sm-btn" onclick="cp('do2')">Copy</button></div></div>
+  </div>
+
+  <!-- LEARN -->
+  <div class="panel" id="p-learn">
+    <div id="learn-menu">
+      <div class="learn-header">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div><div class="learn-title">Learn the cipher</div><div class="learn-desc">Master every code through flashcards, quizzes and typing challenges.</div></div>
+          <div id="streak-disp" class="streak-badge" style="display:none"><span>🔥</span><span id="streak-num">0</span></div>
+        </div>
+        <div class="xp-bar-wrap">
+          <div class="xp-row"><span class="xp-label">Level <span id="xp-level">1</span></span><span class="xp-num"><span id="xp-cur">0</span> / <span id="xp-max">100</span> XP</span></div>
+          <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="learn-stats">
+        <div class="ls-card ls-streak"><div class="ls-v" id="st-streak">0</div><div class="ls-l">🔥 Streak</div></div>
+        <div class="ls-card ls-correct"><div class="ls-v" id="st-correct">0</div><div class="ls-l">✓ Correct</div></div>
+        <div class="ls-card ls-best"><div class="ls-v" id="st-best">0</div><div class="ls-l">★ Best streak</div></div>
+      </div>
+      <div style="font-size:11px;font-weight:600;color:#6b71a0;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px">Choose a mode</div>
+      <div class="mode-grid">
+        <div class="mode-card" onclick="startMode('flash')">
+          <div class="mode-icon">🃏</div>
+          <div class="mode-name">Flashcards</div>
+          <div class="mode-desc">Flip cards to learn each cipher code at your own pace</div>
+        </div>
+        <div class="mode-card" onclick="startMode('quiz')">
+          <div class="mode-icon">🎯</div>
+          <div class="mode-name">Quiz</div>
+          <div class="mode-desc">Pick the correct cipher code from 4 options</div>
+        </div>
+        <div class="mode-card" onclick="startMode('type')">
+          <div class="mode-icon">⌨️</div>
+          <div class="mode-name">Type it</div>
+          <div class="mode-desc">See the code, type the letter - hardest mode</div>
+        </div>
+        <div class="mode-card" onclick="startMode('rev')">
+          <div class="mode-icon">🔄</div>
+          <div class="mode-name">Reverse</div>
+          <div class="mode-desc">See the letter, type its full cipher code</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLASHCARD MODE -->
+    <div id="learn-flash" style="display:none">
+      <div class="flashcard-area">
+        <div class="fc-progress">
+          <div class="fc-bar"><div class="fc-bar-fill" id="fc-bar-fill" style="width:0%"></div></div>
+          <div class="fc-count" id="fc-count">0 / 36</div>
+        </div>
+        <div class="card-scene">
+          <div class="card-inner" id="fc-inner" onclick="flipCard()">
+            <div class="card-face"><div class="card-hint">Cipher code</div><div class="card-main" id="fc-front">-</div><div class="card-tap">Tap to reveal</div></div>
+            <div class="card-back"><div class="card-hint">This letter is</div><div class="card-main" id="fc-back">-</div><div class="card-tap">Tap to continue</div></div>
+          </div>
+        </div>
+        <div class="card-nav">
+          <button class="cn-btn cn-bad" onclick="rateCard(0)">Forgot it</button>
+          <button class="cn-btn cn-ok" onclick="rateCard(1)">Almost</button>
+          <button class="cn-btn cn-good" onclick="rateCard(2)">Got it!</button>
+        </div>
+        <button class="sm-btn" onclick="showMenu()" style="width:100%;text-align:center">← Back to menu</button>
+      </div>
+    </div>
+
+    <!-- QUIZ MODE -->
+    <div id="learn-quiz" style="display:none">
+      <div class="quiz-area">
+        <div class="fc-progress">
+          <div class="fc-bar"><div class="fc-bar-fill" id="qz-bar-fill" style="width:0%"></div></div>
+          <div class="fc-count" id="qz-count">0 / 10</div>
+        </div>
+        <div class="quiz-q-card">
+          <div class="quiz-q-label">What letter does this code represent?</div>
+          <div class="quiz-q-text" id="qz-q">-</div>
+          <div class="quiz-q-sub">Pick the correct answer</div>
+        </div>
+        <div class="quiz-opts" id="qz-opts"></div>
+        <div class="quiz-feedback" id="qz-fb"></div>
+        <button class="quiz-next" id="qz-next" onclick="nextQuiz()">Next question →</button>
+        <button class="sm-btn" onclick="showMenu()" style="text-align:center">← Back to menu</button>
+      </div>
+    </div>
+
+    <!-- TYPE MODE (code → letter) -->
+    <div id="learn-type" style="display:none">
+      <div class="type-area">
+        <div class="fc-progress">
+          <div class="fc-bar"><div class="fc-bar-fill" id="tp-bar-fill" style="width:0%"></div></div>
+          <div class="fc-count" id="tp-count">0 / 10</div>
+        </div>
+        <div class="type-q-card">
+          <div class="type-q-label">What letter is this?</div>
+          <div class="type-q-text" id="tp-q">-</div>
+        </div>
+        <input type="text" class="type-input" id="tp-inp" placeholder="Type the letter..." maxlength="1" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')checkType()"/>
+        <div class="type-feedback" id="tp-fb"></div>
+        <button class="type-submit" onclick="checkType()">Check answer</button>
+        <button class="type-hint-btn" onclick="showTypeHint()" id="tp-hint-btn">Show hint</button>
+        <button class="sm-btn" onclick="showMenu()" style="text-align:center">← Back to menu</button>
+      </div>
+    </div>
+
+    <!-- REVERSE MODE (letter → code) -->
+    <div id="learn-rev" style="display:none">
+      <div class="type-area">
+        <div class="fc-progress">
+          <div class="fc-bar"><div class="fc-bar-fill" id="rv-bar-fill" style="width:0%"></div></div>
+          <div class="fc-count" id="rv-count">0 / 10</div>
+        </div>
+        <div class="type-q-card">
+          <div class="type-q-label">Type the cipher code for:</div>
+          <div class="type-q-text" id="rv-q" style="font-size:36px">-</div>
+        </div>
+        <input type="text" class="type-input" id="rv-inp" placeholder="Type the cipher code..." oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')checkRev()"/>
+        <div class="type-feedback" id="rv-fb"></div>
+        <button class="type-submit" onclick="checkRev()">Check answer</button>
+        <button class="type-hint-btn" onclick="showRevHint()" id="rv-hint-btn">Show hint</button>
+        <button class="sm-btn" onclick="showMenu()" style="text-align:center">← Back to menu</button>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="learn-result" style="display:none">
+      <div class="result-card">
+        <div class="result-score" id="res-score">0/10</div>
+        <div class="result-msg" id="res-msg">Nice work!</div>
+        <div class="result-detail" id="res-detail"></div>
+        <div class="result-actions">
+          <button class="ra-btn ra-retry" onclick="retryMode()">Try again</button>
+          <button class="ra-btn ra-menu" onclick="showMenu()">Menu</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="content">
-    <div class="seg">
-      <button class="seg-btn on" id="et" onclick="sm('e')">Encrypt</button>
-      <button class="seg-btn" id="dt" onclick="sm('d')">Decrypt</button>
-      <button class="seg-btn" id="st" onclick="sm('s')">📷 Scan</button>
-      <button class="seg-btn" id="at" onclick="sm('a')" style="display:none">Admin</button>
+  <!-- REFERENCE -->
+  <div class="panel" id="p-ref">
+    <div class="search-row"><input type="text" id="search-inp" placeholder="Search letter or code..." oninput="filterTable()"></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Character</th><th>Cipher code</th><th>Type</th></tr></thead><tbody id="ref-body"></tbody></table></div>
+    <div class="info-row"><div class="info-pill">36 total</div><div class="info-pill">26 letters</div><div class="info-pill">10 numbers</div></div>
+    <div class="hint">Separate codes with <span style="color:#c8cad8;font-family:'JetBrains Mono',monospace;font-size:12px"> / </span> when sharing encrypted messages.</div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="panel" id="p-hist">
+    <div style="display:flex;justify-content:space-between;align-items:center"><div class="fl" style="margin:0">Session history</div><button class="sm-btn" onclick="clearHist()">Clear all</button></div>
+    <div id="hist-list"><div class="empty-state">No activity yet this session</div></div>
+  </div>
+
+  <!-- HELP -->
+  <div class="panel" id="p-help">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="help-card"><div class="help-card-title">Step 1 - Encrypt</div><div class="help-card-body">Go to Encrypt, type your message and press the button. Each letter becomes a cipher code separated by /</div></div>
+      <div class="help-card"><div class="help-card-title">Step 2 - Share</div><div class="help-card-body">Copy the encrypted output and send it to your friend. They need access to Cipher Vault to read it.</div></div>
+      <div class="help-card"><div class="help-card-title">Step 3 - Decrypt</div><div class="help-card-body">Paste the code into the Decrypt tab and press the button to reveal the original message.</div></div>
+      <div class="help-card green"><div class="help-card-title">Tip - Learn tab</div><div class="help-card-body">Use the Learn tab to memorise the cipher through flashcards, quizzes and typing challenges. Earn XP as you go!</div></div>
     </div>
+  </div>
 
-    <!-- ENCRYPT -->
-    <div id="ep">
-      <div style="margin-bottom:12px"><div class="fl">Message</div><textarea id="ei" placeholder="Type your message here..."></textarea></div>
-      <button class="run-btn run-btn-user" onclick="enc()">Encrypt message</button>
-      <div style="margin-top:14px"><div class="fl">Encrypted output</div>
-        <div class="output-box placeholder" id="eo">Output will appear here</div>
-        <div class="copy-row"><button class="copy-btn" onclick="cp('eo')">Copy</button></div>
-      </div>
+  <!-- ADMIN -->
+  <div class="panel" id="p-adm">
+    <div class="sec-title">Overview</div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-v" id="a-enc">0</div><div class="stat-l">Encryptions</div></div>
+      <div class="stat-card"><div class="stat-v" id="a-dec">0</div><div class="stat-l">Decryptions</div></div>
+      <div class="stat-card"><div class="stat-v" id="a-users">-</div><div class="stat-l">Total users</div></div>
+      <div class="stat-card"><div class="stat-v" id="a-admins">-</div><div class="stat-l">Admins</div></div>
     </div>
-
-    <!-- DECRYPT -->
-    <div id="dp2" style="display:none">
-      <div style="margin-bottom:12px"><div class="fl">Encrypted code</div><textarea id="di" placeholder="Paste the cipher code here..."></textarea></div>
-      <button class="run-btn run-btn-user" onclick="dec()">Decrypt message</button>
-      <div style="margin-top:14px"><div class="fl">Decoded message</div>
-        <div class="output-box placeholder" id="do2">Output will appear here</div>
-        <div class="copy-row"><button class="copy-btn" onclick="cp('do2')">Copy</button></div>
-      </div>
+    <div class="sec-title">Add new user</div>
+    <div class="form-grid">
+      <div><div class="fl">Username</div><input type="text" id="new-un" placeholder="Username" style="padding:10px 12px"/></div>
+      <div><div class="fl">Password</div><input type="password" id="new-pw" placeholder="Password" style="padding:10px 12px"/></div>
     </div>
-
-    <!-- SCAN & DECRYPT -->
-    <div id="sp" style="display:none">
-      <!-- Info banner -->
-      <div style="background:#141720;border:1px solid #1e2130;border-radius:10px;padding:12px;margin-bottom:4px">
-        <div style="font-size:12px;font-weight:500;color:#e8eaf0;margin-bottom:4px">📷 Scan Handwritten Cipher</div>
-        <div style="font-size:11px;color:#4a4f66;line-height:1.7">Take a photo or upload an image of handwritten cipher codes. Claude AI reads even messy handwriting and decrypts it automatically.</div>
-      </div>
-
-      <!-- Camera / Upload toggle -->
-      <div class="mode-toggle">
-        <button class="mode-btn active" id="mb-cam" onclick="setMode('cam')">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="9" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 4V3a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.3"/></svg>
-          Camera
-        </button>
-        <button class="mode-btn" id="mb-file" onclick="setMode('file')">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 6h6M5 9h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          Upload Photo
-        </button>
-      </div>
-
-      <!-- Camera section -->
-      <div id="sec-cam">
-        <div class="camera-zone" id="camZone" onclick="camZoneClick()">
-          <video id="camVid" autoplay playsinline muted></video>
-          <canvas id="camCanvas" style="display:none"></canvas>
-          <img id="camPrev" class="preview-img" alt="">
-          <div class="cam-placeholder" id="camPH">
-            <svg viewBox="0 0 32 32" fill="none" stroke="#6366f1" stroke-width="1.3">
-              <rect x="2" y="7" width="28" height="20" rx="3"/><circle cx="16" cy="17" r="6"/>
-              <path d="M11 7V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1"/>
-            </svg>
-            <div class="ph-title">Tap to open camera</div>
-            <div class="ph-sub">Point at handwritten cipher text</div>
-          </div>
-          <div class="scan-overlay" id="camOvr">
-            <div class="spin"></div>
-            <div class="scan-msg" id="camMsg">Reading handwriting…</div>
-          </div>
-        </div>
-        <div class="cam-btns" id="camLiveBtns" style="display:none">
-          <button class="cam-btn red" onclick="resetCam()">✕ Cancel</button>
-          <button class="cam-btn green" onclick="snapPhoto()">📸 Capture photo</button>
-        </div>
-        <div class="cam-btns" id="camCapBtns" style="display:none">
-          <button class="cam-btn red" onclick="resetCam()">✕ Retake</button>
-          <button class="cam-btn green" id="camScanBtn" onclick="runCamScan()">🔍 Scan &amp; Decrypt</button>
-        </div>
-      </div>
-
-      <!-- File section -->
-      <div id="sec-file" style="display:none">
-        <div class="camera-zone" id="fileZone" onclick="document.getElementById('fileIn').click()">
-          <img id="filePrev" class="preview-img" alt="">
-          <div class="cam-placeholder" id="filePH">
-            <svg viewBox="0 0 32 32" fill="none" stroke="#6366f1" stroke-width="1.3">
-              <rect x="4" y="3" width="24" height="26" rx="3"/>
-              <path d="M16 10v10M11 15l5-5 5 5"/>
-            </svg>
-            <div class="ph-title">Tap to upload photo</div>
-            <div class="ph-sub">JPG, PNG, HEIC supported</div>
-          </div>
-          <div class="scan-overlay" id="fileOvr">
-            <div class="spin"></div>
-            <div class="scan-msg" id="fileMsg">Reading handwriting…</div>
-          </div>
-        </div>
-        <input type="file" id="fileIn" accept="image/*" style="display:none" onchange="handleFile(event)">
-        <div class="cam-btns" id="fileBtns" style="display:none">
-          <button class="cam-btn red" onclick="resetFile()">✕ Clear</button>
-          <button class="cam-btn green" onclick="runFileScan()">🔍 Scan &amp; Decrypt</button>
-        </div>
-      </div>
-
-      <!-- Results -->
-      <div id="scanErr" class="err-box" style="display:none"></div>
-      <div id="ocrBox" class="ocr-box" style="display:none">
-        <div class="ocr-lbl">📝 What AI read from the image</div>
-        <div class="ocr-txt" id="ocrTxt"></div>
-        <div class="ocr-hint">Claude extracted this cipher text from your handwriting. Decoded result below.</div>
-      </div>
-      <div id="scanOut" style="display:none">
-        <div class="fl">Decrypted message</div>
-        <div class="output-box" id="scanDo" style="font-size:15px;font-weight:500;color:#e8eaf0;letter-spacing:0.5px"></div>
-        <div class="copy-row"><button class="copy-btn" onclick="cp('scanDo')">Copy</button></div>
-      </div>
-    </div>
-
-    <!-- ADMIN PANEL -->
-    <div class="admin-panel" id="ap2">
-      <div>
-        <div class="admin-section-title">Overview</div>
-        <div class="stat-row">
-          <div class="stat-card"><div class="stat-val" id="s-chars">36</div><div class="stat-lbl">Cipher chars</div></div>
-          <div class="stat-card"><div class="stat-val" id="s-logins">0</div><div class="stat-lbl">Login attempts</div></div>
-          <div class="stat-card"><div class="stat-val" id="s-uses">0</div><div class="stat-lbl">Session uses</div></div>
-        </div>
-      </div>
-      <div>
-        <div class="admin-section-title">System Info</div>
-        <div class="info-grid">
-          <div class="info-card"><div class="info-lbl">Your IP</div><div class="info-val" id="sys-ip">Fetching…</div></div>
-          <div class="info-card"><div class="info-lbl">Browser</div><div class="info-val" id="sys-ua">—</div></div>
-          <div class="info-card"><div class="info-lbl">Platform</div><div class="info-val" id="sys-plat">—</div></div>
-          <div class="info-card"><div class="info-lbl">Session start</div><div class="info-val" id="sys-time">—</div></div>
-          <div class="info-card" style="grid-column:1/-1"><div class="info-lbl">URL / Hash</div><div class="info-val" id="sys-url">—</div></div>
-        </div>
-      </div>
-      <div>
-        <div class="admin-section-title">Access Codes</div>
-        <div class="field-group">
-          <div class="fl">User PIN — currently <span id="show-upin" style="color:#6366f1;font-family:monospace">****</span></div>
-          <div class="inline-row">
-            <input type="password" id="new-upin" placeholder="New 4-digit PIN" maxlength="4">
-            <button class="run-btn run-btn-admin" style="max-width:80px;padding:10px;font-size:12px" onclick="changePin('user')">Save</button>
-          </div>
-        </div>
-        <div class="field-group">
-          <div class="fl">Admin PIN — currently <span id="show-apin" style="color:#f59e0b;font-family:monospace">****</span></div>
-          <div class="inline-row">
-            <input type="password" id="new-apin" placeholder="New 4-digit PIN" maxlength="4">
-            <button class="run-btn run-btn-admin" style="max-width:80px;padding:10px;font-size:12px" onclick="changePin('admin')">Save</button>
-          </div>
-        </div>
-        <div class="green-notice" id="pin-notice" style="display:none">✓ PIN updated successfully.</div>
-      </div>
-      <div>
-        <div class="admin-section-title">Cipher Map Editor</div>
-        <div class="table-wrap"><table class="cipher-table" id="ctable"></table></div>
-        <div style="margin-top:8px;display:flex;gap:8px">
-          <button class="save-btn" onclick="saveCipherMap()">Save cipher map</button>
-          <button class="reset-btn" style="border-color:#2a2d3a;color:#4a4f66" onclick="resetCipherMap()">Reset default</button>
-        </div>
-        <div class="green-notice" id="cipher-notice" style="display:none;margin-top:8px">✓ Cipher map saved.</div>
-      </div>
-      <div>
-        <div class="admin-section-title">Settings</div>
-        <div class="toggle-row"><span>Auto-lock after 5 min idle</span><label class="tog-wrap"><input type="checkbox" id="tog-autolock" checked><span class="slider"></span></label></div>
-      </div>
-      <div>
-        <div class="admin-section-title">Activity Log</div>
-        <div class="table-wrap"><table class="log-table"><thead><tr><th>Time</th><th>Role</th><th>Action</th></tr></thead><tbody id="log-body"></tbody></table></div>
-        <div style="margin-top:8px"><button class="reset-btn" style="border-color:#2a2d3a;color:#4a4f66" onclick="clearLog()">Clear log</button></div>
-      </div>
-      <div>
-        <div class="admin-section-title">Danger Zone</div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <button class="reset-btn" onclick="clearAll()">Clear all fields &amp; reset session</button>
-          <button class="reset-btn" onclick="factoryReset()">Factory reset (restore all defaults)</button>
-        </div>
-      </div>
-    </div>
+    <div><div class="fl">Role</div><select id="new-role"><option value="user">User</option><option value="admin">Admin</option></select></div>
+    <button class="run-btn rb-a" onclick="addUser()">Add user</button>
+    <div id="add-msg" class="add-msg-err"></div>
+    <div class="sec-title">Manage users</div>
+    <div id="users-loading" class="loading-row">Loading users...</div>
+    <div class="tbl-wrap" id="users-tbl-wrap" style="display:none"><table><thead><tr><th>Username</th><th>Role</th><th>Actions</th></tr></thead><tbody id="users-body"></tbody></table></div>
+    <div class="sec-title">Danger zone</div>
+    <button class="danger-btn" onclick="clearAll()">Clear all fields, history &amp; reset session stats</button>
   </div>
 </div>
 </div>
 
 <script>
-// ── State ─────────────────────────────────────────────────────────────────────
-const DEFAULT_C={A:'10A379E',B:'L3A2T72A',C:'3A7212',D:'061379EF',E:'0G100M21',F:'001A379E1',G:'0E02081',H:'NV2A21',I:'000S1+E321',J:'KLM3123',K:'12100KL',L:'13567124',M:'12B61EFG',N:'LLW1691',O:'01023Q1',P:'L0121+9421',Q:'SW13I2',R:'DG5T24121',S:'WS23129',T:'05AL123',U:'V5W1239',V:'050EZ139',W:'W0W09E7',X:'ENELI93',Y:'LWE014',Z:'EEC001031','0':'EEE006','1':'010Q2E1','2':'3109E1F','3':'390EFE1','4':'2312EEX','5':'FE392F','6':'XEF2ERt','7':'EP90012','8':'E9023I','9':'2291EXE'};
-let C={...DEFAULT_C},R={};
-let PINS={user:'5858',admin:'1212'};
-let pin='',uses=0,role='',loginAttempts=0,activityLog=[],sessionStart=new Date(),idleTimer=null,adminUnlocked=false;
-let camStream=null,capturedUrl=null,fileDataUrl=null,scanInputMode='cam';
+const SB_URL='https://uebrmipevcbuzwrminsc.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlYnJtaXBldmNidXp3cm1pbnNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MzQ1MDYsImV4cCI6MjA5MTUxMDUwNn0.gsXS15I5ImKK7Cf_YLfpKrwfzZ1LVSlq_qn_5BNPfiU';
+const C={A:'10A379E',B:'L3A2T72A',C:'3A7212',D:'061379EF',E:'0G100M21',F:'001A379E1',G:'0E02081',H:'NV2A21',I:'000S1+E321',J:'KLM3123',K:'12100KL',L:'13567124',M:'12B61EFG',N:'LLW1691',O:'01023Q1',P:'L0121+9421',Q:'SW13I2',R:'DG5T24121',S:'WS23129',T:'05AL123',U:'V5W1239',V:'050EZ139',W:'W0W09E7',X:'ENELI93',Y:'LWE014',Z:'EEC001031','0':'EEE006','1':'010Q2E1','2':'3109E1F','3':'390EFE1','4':'2312EEX','5':'FE392F','6':'XEF2ERt','7':'EP90012','8':'E9023I','9':'2291EXE'};
+const R={};for(const[k,v]of Object.entries(C))R[v.toUpperCase()]=k;
+const KEYS=Object.keys(C);
 
-function buildR(){R={};for(const[k,v]of Object.entries(C))R[v.toUpperCase()]=k;}
-buildR();
+let currentUser=null,encCount=0,decCount=0,history=[];
+let xp=0,level=1,streak=0,bestStreak=0,totalCorrect=0;
+let fcDeck=[],fcIdx=0,fcFlipped=false;
+let qzQuestions=[],qzIdx=0,qzScore=0,qzAnswered=false;
+let tpQuestions=[],tpIdx=0,tpScore=0;
+let rvQuestions=[],rvIdx=0,rvScore=0;
+let lastMode='';
 
-// hash check
-function checkHash(){adminUnlocked=window.location.hash==='#adminpanelyes';if(adminUnlocked)document.getElementById('login-sub').textContent='Admin access enabled via URL';}
-checkHash();window.addEventListener('hashchange',checkHash);
-
-// ── Login ─────────────────────────────────────────────────────────────────────
-function ap(n){if(pin.length>=4)return;pin+=n;ud();if(pin.length===4)setTimeout(ck,100);}
-function dp(){pin=pin.slice(0,-1);ud();setMsg('');}
-function ud(e,adm){for(let i=0;i<4;i++){const d=document.getElementById('d'+i);d.className='dot';if(i<pin.length){if(e)d.classList.add('error');else if(adm)d.classList.add('admin-fill');else d.classList.add('filled');}}}
-function setMsg(t,tp){const el=document.getElementById('msg');el.textContent=t;el.className=tp==='ok'?'ok-line':tp==='admin'?'admin-line':'err-line';}
-function ck(){
-  loginAttempts++;
-  if(pin===PINS.user){role='user';ud();for(let i=0;i<4;i++)document.getElementById('d'+i).classList.add('success');setMsg('Access granted','ok');addLog('user','Logged in');setTimeout(enterApp,500);}
-  else if(pin===PINS.admin){role='admin';ud(false,true);setMsg('Admin access granted','admin');addLog('admin','Admin login');setTimeout(enterApp,500);}
-  else{ud(true);setMsg('Incorrect PIN — try again');addLog('—','Failed login attempt');setTimeout(()=>{pin='';ud();setMsg('');},700);}
+async function sbFetch(path,opts={}){
+  const res=await fetch(SB_URL+'/rest/v1/'+path,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation',...(opts.headers||{})},...opts});
+  const txt=await res.text();try{return{ok:res.ok,data:JSON.parse(txt)};}catch{return{ok:res.ok,data:txt};}
 }
+async function doLogin(){
+  const un=document.getElementById('un').value.trim(),pw=document.getElementById('pw').value;
+  if(!un||!pw){setLM('Please enter username and password');return;}
+  const btn=document.getElementById('login-btn');btn.disabled=true;btn.textContent='Signing in...';setLM('');
+  const {ok,data}=await sbFetch('cipher_users?username=eq.'+encodeURIComponent(un)+'&select=*');
+  btn.disabled=false;btn.textContent='Sign in';
+  if(!ok||!Array.isArray(data)||!data.length||data[0].password!==pw){setLM('Invalid username or password');return;}
+  currentUser=data[0];enterApp();
+}
+function setLM(t,ok){const el=document.getElementById('login-msg');el.textContent=t;el.className=ok?'ok-msg':'err-msg';}
 function enterApp(){
-  document.getElementById('login').style.display='none';
+  document.getElementById('login-screen').style.display='none';
   document.getElementById('main').style.display='flex';
-  const badge=document.getElementById('status-badge'),btxt=document.getElementById('badge-txt'),atab=document.getElementById('at');
-  if(role==='admin'){badge.className='badge badge-admin';btxt.textContent='Admin';}
-  else{badge.className='badge badge-secure';btxt.textContent='Secure';}
-  if(role==='admin'&&adminUnlocked){atab.style.display='';populateSysInfo();buildTable();refreshStats();}
-  else atab.style.display='none';
-  sm('e');resetIdleTimer();
+  const b=document.getElementById('sbadge'),bt=document.getElementById('btxt');
+  if(currentUser.role==='admin'){b.className='badge b-adm';bt.textContent=currentUser.username+' · Admin';}
+  else{b.className='badge b-sec';bt.textContent=currentUser.username;}
+  buildNav();buildRefTable();if(currentUser.role==='admin')loadUsers();showTab('enc');
 }
-function lockOut(){clearTimeout(idleTimer);addLog(role||'—','Locked out');pin='';role='';ud();setMsg('');stopCam();document.getElementById('main').style.display='none';document.getElementById('login').style.display='flex';}
+function logout(){currentUser=null;encCount=0;decCount=0;history=[];xp=0;level=1;streak=0;bestStreak=0;totalCorrect=0;document.getElementById('main').style.display='none';document.getElementById('login-screen').style.display='flex';document.getElementById('un').value='';document.getElementById('pw').value='';setLM('');}
 
-// ── Tabs ──────────────────────────────────────────────────────────────────────
-function sm(m){
-  ['e','d','s','a'].forEach(k=>{
-    const t=document.getElementById({e:'et',d:'dt',s:'st',a:'at'}[k]);
-    if(t){t.className='seg-btn';if(k===m)t.classList.add(role==='admin'?'on-admin':'on');}
+const USER_TABS=[{id:'enc',label:'Encrypt',panel:'p-enc'},{id:'dec',label:'Decrypt',panel:'p-dec'},{id:'learn',label:'✦ Learn',panel:'p-learn'},{id:'ref',label:'Reference',panel:'p-ref'},{id:'hist',label:'History',panel:'p-hist'},{id:'help',label:'Help',panel:'p-help'}];
+const ADMIN_TABS=[...USER_TABS,{id:'adm',label:'Admin',panel:'p-adm'}];
+function buildNav(){
+  const nav=document.getElementById('nav');nav.innerHTML='';
+  const tabs=currentUser.role==='admin'?ADMIN_TABS:USER_TABS;
+  tabs.forEach(t=>{const b=document.createElement('button');b.className='nav-btn';b.id='nb-'+t.id;b.textContent=t.label;b.onclick=()=>showTab(t.id);nav.appendChild(b);});
+}
+function showTab(id){
+  const tabs=currentUser.role==='admin'?ADMIN_TABS:USER_TABS;
+  tabs.forEach(t=>{
+    const nb=document.getElementById('nb-'+t.id),p=document.getElementById(t.panel);
+    if(nb)nb.className='nav-btn'+(t.id===id?(currentUser.role==='admin'&&id==='adm')?' on-a':' on':'');
+    if(p)p.className='panel'+(t.id===id?' active':'');
   });
-  [{k:'e',id:'ep'},{k:'d',id:'dp2'},{k:'s',id:'sp'},{k:'a',id:'ap2'}].forEach(({k,id})=>{
-    const p=document.getElementById(id);
-    if(p)p.style.display=k===m?(k==='a'?'flex':'block'):'none';
-  });
-  if(m!=='s')stopCam();
+  if(id==='adm')loadUsers();
 }
 
-// ── Encrypt / Decrypt ─────────────────────────────────────────────────────────
-function enc(){const t=document.getElementById('ei').value.toUpperCase();const p=[];for(const ch of t){if(ch===' ')p.push('   ');else if(C[ch])p.push(C[ch]);else p.push('[?]');}const el=document.getElementById('eo');el.textContent=p.join(' / ')||'—';el.classList.remove('placeholder');uses++;refreshStats();addLog(role,'Encrypted');resetIdleTimer();}
-function dec(){const t=document.getElementById('di').value.trim();const el=document.getElementById('do2');el.textContent=decodeRaw(t)||'—';el.classList.remove('placeholder');uses++;refreshStats();addLog(role,'Decrypted');resetIdleTimer();}
+function enc(){
+  const txt=document.getElementById('ei').value.toUpperCase();if(!txt.trim())return;
+  const p=[];for(const ch of txt){if(ch===' ')p.push('   ');else if(C[ch])p.push(C[ch]);else p.push('[?]');}
+  const out=p.join(' / ');
+  const el=document.getElementById('eo');el.textContent=out;el.className='out-box has-content';
+  encCount++;document.getElementById('a-enc').textContent=encCount;addHist('enc',document.getElementById('ei').value,out);
+}
+function dec(){
+  const txt=document.getElementById('di').value.trim();if(!txt)return;
+  const tokens=txt.split(/\s*\/\s*/);let out='';
+  for(const tok of tokens){const k=tok.trim();if(!k){out+=' ';continue;}out+=R[k.toUpperCase()]||'[?]';}
+  const el=document.getElementById('do2');el.textContent=out;el.className='out-box has-content';
+  decCount++;document.getElementById('a-dec').textContent=decCount;addHist('dec',txt,out);
+}
+function addHist(dir,input,output){
+  const now=new Date();const ts=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  history.unshift({dir,input:input.substring(0,60)+(input.length>60?'...':''),output:output.substring(0,80)+(output.length>80?'...':''),ts});
+  if(history.length>20)history.pop();renderHist();
+}
+function renderHist(){
+  const el=document.getElementById('hist-list');
+  if(!history.length){el.innerHTML='<div class="empty-state">No activity yet this session</div>';return;}
+  el.innerHTML=history.map(h=>`<div class="hist-item"><span class="hist-dir ${h.dir==='enc'?'hd-enc':'hd-dec'}">${h.dir==='enc'?'ENC':'DEC'}</span><div class="hist-text" style="display:flex;flex-direction:column;gap:2px"><span>${h.dir==='enc'?h.input:h.output}</span><span style="color:#4a4f6a;font-size:10px">${h.dir==='enc'?'→ encoded':'→ decoded'}</span></div><span class="hist-time">${h.ts}</span></div>`).join('');
+}
+function clearHist(){history=[];renderHist();}
+function buildRefTable(){
+  const tbody=document.getElementById('ref-body');tbody.innerHTML='';
+  for(const[k,v]of Object.entries(C)){const tr=document.createElement('tr');tr.innerHTML=`<td class="key">${k}</td><td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#a0a3c0">${v}</td><td><span class="tag ${isNaN(k)?'tag-letter':'tag-num'}">${isNaN(k)?'Letter':'Number'}</span></td>`;tbody.appendChild(tr);}
+}
+function filterTable(){
+  const q=document.getElementById('search-inp').value.toUpperCase().trim();
+  document.querySelectorAll('#ref-body tr').forEach(tr=>{tr.style.display=(!q||[...tr.querySelectorAll('td')].some(td=>td.textContent.toUpperCase().includes(q)))?'':'none';});
+}
 function cp(id){navigator.clipboard.writeText(document.getElementById(id).textContent).catch(()=>{});}
-function decodeRaw(raw){const tokens=raw.split(/\s*\/\s*/);let o='';for(const tok of tokens){const k=tok.trim();if(!k){o+=' ';continue;}o+=R[k.toUpperCase()]||'[?]';}return o;}
-
-// ── SCAN MODE ─────────────────────────────────────────────────────────────────
-function setMode(m){
-  scanInputMode=m;
-  document.getElementById('mb-cam').className='mode-btn'+(m==='cam'?' active':'');
-  document.getElementById('mb-file').className='mode-btn'+(m==='file'?' active':'');
-  document.getElementById('sec-cam').style.display=m==='cam'?'block':'none';
-  document.getElementById('sec-file').style.display=m==='file'?'block':'none';
-  clearScanOut();
-  if(m!=='cam')stopCam();
+function clearAll(){
+  document.getElementById('ei').value='';document.getElementById('di').value='';document.getElementById('enc-cnt').textContent='0 chars';
+  ['eo','do2'].forEach(id=>{const e=document.getElementById(id);e.textContent='Output will appear here';e.className='out-box ph';});
+  history=[];renderHist();encCount=0;decCount=0;document.getElementById('a-enc').textContent='0';document.getElementById('a-dec').textContent='0';
 }
-
-// Camera
-async function camZoneClick(){
-  if(capturedUrl||camStream)return;
-  try{
-    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false});
-    const vid=document.getElementById('camVid');
-    vid.srcObject=camStream;vid.style.display='block';
-    document.getElementById('camPH').style.display='none';
-    document.getElementById('camLiveBtns').style.display='flex';
-  }catch(e){showErr('Camera access denied. Try "Upload Photo" mode instead.');}
-}
-function snapPhoto(){
-  const vid=document.getElementById('camVid');
-  const canvas=document.getElementById('camCanvas');
-  canvas.width=vid.videoWidth||1280;canvas.height=vid.videoHeight||720;
-  canvas.getContext('2d').drawImage(vid,0,0);
-  capturedUrl=canvas.toDataURL('image/jpeg',0.93);
-  const prev=document.getElementById('camPrev');prev.src=capturedUrl;prev.style.display='block';
-  vid.style.display='none';stopCam();
-  document.getElementById('camLiveBtns').style.display='none';
-  document.getElementById('camCapBtns').style.display='flex';
-  clearScanOut();
-}
-function stopCam(){if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}}
-function resetCam(){
-  stopCam();capturedUrl=null;
-  const vid=document.getElementById('camVid');vid.style.display='none';vid.srcObject=null;
-  document.getElementById('camPrev').style.display='none';
-  document.getElementById('camPH').style.display='flex';
-  document.getElementById('camLiveBtns').style.display='none';
-  document.getElementById('camCapBtns').style.display='none';
-  clearScanOut();
-}
-
-// File
-function handleFile(e){
-  const file=e.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    fileDataUrl=ev.target.result;
-    const prev=document.getElementById('filePrev');prev.src=fileDataUrl;prev.style.display='block';
-    document.getElementById('filePH').style.display='none';
-    document.getElementById('fileBtns').style.display='flex';
-    clearScanOut();
-  };reader.readAsDataURL(file);
-}
-function resetFile(){
-  fileDataUrl=null;
-  document.getElementById('filePrev').style.display='none';
-  document.getElementById('filePH').style.display='flex';
-  document.getElementById('fileBtns').style.display='none';
-  document.getElementById('fileIn').value='';
-  clearScanOut();
-}
-function clearScanOut(){
-  document.getElementById('scanErr').style.display='none';
-  document.getElementById('ocrBox').style.display='none';
-  document.getElementById('scanOut').style.display='none';
-}
-function showErr(msg){const el=document.getElementById('scanErr');el.textContent=msg;el.style.display='block';}
-
-async function runCamScan(){if(!capturedUrl){showErr('No photo captured.');return;}await doScan(capturedUrl,'camOvr','camMsg');}
-async function runFileScan(){if(!fileDataUrl){showErr('No image selected.');return;}await doScan(fileDataUrl,'fileOvr','fileMsg');}
-
-async function doScan(dataUrl,ovrId,msgId){
-  clearScanOut();
-  const ovr=document.getElementById(ovrId),msgEl=document.getElementById(msgId);
-  ovr.classList.add('on');
-  const msgs=['Reading handwriting…','Deciphering the scrawl…','AI squinting hard…','Cross-checking codes…','Almost done…'];
-  let mi=0;const ticker=setInterval(()=>{mi=(mi+1)%msgs.length;msgEl.textContent=msgs[mi];},1600);
-
-  // Build cipher description
-  const cDesc=Object.entries(C).map(([k,v])=>`"${k}" → "${v}"`).join(', ');
-  const b64=dataUrl.split(',')[1];
-  const mime=(dataUrl.match(/data:([^;]+);/)||[])[1]||'image/jpeg';
-
-  const prompt=`This image contains handwritten cipher codes from a custom cipher system.
-
-CIPHER MAP (read these codes and decode them):
-${cDesc}
-
-HOW THE CIPHER WORKS:
-- Each letter or number is replaced by its cipher code shown above
-- Codes are separated by " / " (space slash space)
-- Words are separated by "   " (triple space) or a blank gap between slashes
-
-YOUR TASK:
-1. Carefully read ALL handwritten text from the image, even if handwriting is messy, scratchy, or ugly. Do your absolute best.
-2. Extract the cipher codes (the weird-looking strings separated by slashes)
-3. Decode each code using the cipher map above
-4. Return ONLY valid JSON, no extra text, no markdown fences:
-{"raw":"<cipher codes you read, separated by ' / '>","decoded":"<the decoded plaintext message>","confidence":"<high/medium/low>"}`;
-
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        messages:[{role:'user',content:[
-          {type:'image',source:{type:'base64',media_type:mime,data:b64}},
-          {type:'text',text:prompt}
-        ]}]
-      })
-    });
-    clearInterval(ticker);ovr.classList.remove('on');
-
-    if(!res.ok){
-      const err=await res.json().catch(()=>({}));
-      showErr('API error: '+(err?.error?.message||res.statusText));
-      addLog(role,'Scan failed: API error');return;
-    }
-    const data=await res.json();
-    const txt=data.content.filter(b=>b.type==='text').map(b=>b.text).join('').trim();
-
-    let parsed;
-    try{parsed=JSON.parse(txt.replace(/```json|```/g,'').trim());}
-    catch{
-      // fallback: show raw, attempt manual decode
-      document.getElementById('ocrTxt').textContent=txt;
-      document.getElementById('ocrBox').style.display='flex';
-      const decoded=decodeRaw(txt);
-      document.getElementById('scanDo').textContent=decoded||'[could not decode]';
-      document.getElementById('scanOut').style.display='block';
-      addLog(role,'Scan done (raw fallback)');return;
-    }
-
-    document.getElementById('ocrTxt').textContent=parsed.raw||txt;
-    document.getElementById('ocrBox').style.display='flex';
-    const decoded=parsed.decoded||decodeRaw(parsed.raw||txt);
-    document.getElementById('scanDo').textContent=decoded||'[could not decode]';
-    document.getElementById('scanOut').style.display='block';
-    uses++;refreshStats();addLog(role,`Photo scan & decrypt (confidence: ${parsed.confidence||'?'})`);
-
-  }catch(e){
-    clearInterval(ticker);ovr.classList.remove('on');
-    showErr('Network error: '+e.message);
-    addLog(role,'Scan error: '+e.message);
-  }
-}
-
-// ── Admin ─────────────────────────────────────────────────────────────────────
-function buildTable(){
-  const t=document.getElementById('ctable');
-  t.innerHTML='<tr><th>Char</th><th>Cipher code (editable)</th><th>Type</th></tr>';
-  for(const[k,v]of Object.entries(C)){
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${k}</td><td><input class="cipher-edit" data-key="${k}" value="${v}" maxlength="30"></td><td style="color:#4a4f66;font-size:10px">${isNaN(k)?'Letter':'Number'}</td>`;
-    t.appendChild(tr);
-  }
-}
-function saveCipherMap(){
-  document.querySelectorAll('.cipher-edit').forEach(i=>{const v=i.value.trim();if(v)C[i.dataset.key]=v;});
-  buildR();const n=document.getElementById('cipher-notice');n.style.display='block';setTimeout(()=>n.style.display='none',2000);addLog('admin','Saved cipher map');
-}
-function resetCipherMap(){C={...DEFAULT_C};buildR();buildTable();addLog('admin','Reset cipher map');}
-function changePin(who){
-  const f=document.getElementById(who==='user'?'new-upin':'new-apin');
-  const v=f.value.trim();
-  if(!/^\d{4}$/.test(v)){alert('PIN must be exactly 4 digits.');return;}
-  PINS[who]=v;f.value='';updatePinDisplay();
-  const n=document.getElementById('pin-notice');n.style.display='block';setTimeout(()=>n.style.display='none',2500);addLog('admin',`Changed ${who} PIN`);
-}
-function updatePinDisplay(){
-  document.getElementById('show-upin').textContent=PINS.user.slice(0,2)+'**';
-  document.getElementById('show-apin').textContent=PINS.admin.slice(0,2)+'**';
-}
-function refreshStats(){
-  if(!document.getElementById('s-chars'))return;
-  document.getElementById('s-chars').textContent=Object.keys(C).length;
-  document.getElementById('s-uses').textContent=uses;
-  document.getElementById('s-logins').textContent=loginAttempts;
-}
-function populateSysInfo(){
-  fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>document.getElementById('sys-ip').textContent=d.ip).catch(()=>document.getElementById('sys-ip').textContent='Unavailable');
-  const ua=navigator.userAgent;
-  const browsers=[['Chrome',/Chrome\/(\S+)/],['Firefox',/Firefox\/(\S+)/],['Safari',/Version\/(\S+).*Safari/],['Edge',/Edg\/(\S+)/]];
-  let bn='Unknown';for(const[name,re]of browsers){const m=ua.match(re);if(m){bn=`${name} ${m[1]}`;break;}}
-  document.getElementById('sys-ua').textContent=bn;
-  document.getElementById('sys-plat').textContent=navigator.platform||'Unknown';
-  document.getElementById('sys-time').textContent=sessionStart.toLocaleTimeString();
-  document.getElementById('sys-url').textContent=window.location.href;
-  updatePinDisplay();
-}
-function addLog(r,action){const t=new Date().toLocaleTimeString();activityLog.unshift({t,r,action});if(activityLog.length>60)activityLog.pop();renderLog();}
-function renderLog(){
-  const tbody=document.getElementById('log-body');if(!tbody)return;
-  tbody.innerHTML='';
-  activityLog.forEach(e=>{
-    const tr=document.createElement('tr');
-    const pill=e.r==='admin'?`<span class="badge-pill pill-admin">admin</span>`:e.r==='user'?`<span class="badge-pill pill-user">user</span>`:`<span style="color:#4a4f66;font-size:10px">${e.r}</span>`;
-    tr.innerHTML=`<td>${e.t}</td><td>${pill}</td><td>${e.action}</td>`;tbody.appendChild(tr);
+async function loadUsers(){
+  document.getElementById('users-loading').style.display='';document.getElementById('users-tbl-wrap').style.display='none';
+  const {ok,data}=await sbFetch('cipher_users?select=id,username,role,created_at&order=created_at.asc');
+  document.getElementById('users-loading').style.display='none';
+  if(!ok||!Array.isArray(data)){document.getElementById('users-loading').textContent='Failed to load.';document.getElementById('users-loading').style.display='';return;}
+  document.getElementById('a-users').textContent=data.length;document.getElementById('a-admins').textContent=data.filter(u=>u.role==='admin').length;
+  document.getElementById('users-tbl-wrap').style.display='';
+  const tbody=document.getElementById('users-body');tbody.innerHTML='';
+  data.forEach(u=>{
+    const isMe=u.username===currentUser.username;const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="key">${u.username}${isMe?' <span style="font-size:10px;color:#4a4f6a;font-weight:400;font-family:Inter">(you)</span>':''}</td><td><span class="tag ${u.role==='admin'?'tag-adm':'tag-user'}">${u.role}</span></td><td><div class="action-row">${isMe?'<span style="font-size:10px;color:#4a4f6a">-</span>':`${u.role!=='admin'?`<button class="action-btn ab-promote" onclick="changeRole('${u.id}','admin')">Make admin</button>`:`<button class="action-btn ab-demote" onclick="changeRole('${u.id}','user')">Make user</button>`}<button class="action-btn ab-del" onclick="deleteUser('${u.id}','${u.username}')">Remove</button>`}</div></td>`;
+    tbody.appendChild(tr);
   });
 }
-function clearLog(){activityLog=[];renderLog();addLog('admin','Cleared log');}
-function clearAll(){
-  ['ei','di'].forEach(id=>document.getElementById(id).value='');
-  ['eo','do2'].forEach(id=>{const el=document.getElementById(id);el.textContent='Output will appear here';el.className='output-box placeholder';});
-  resetCam();resetFile();uses=0;refreshStats();addLog('admin','Cleared all fields');
+async function addUser(){
+  const un=document.getElementById('new-un').value.trim(),pw=document.getElementById('new-pw').value,role=document.getElementById('new-role').value;
+  const msg=document.getElementById('add-msg');if(!un||!pw){msg.className='add-msg-err';msg.textContent='Username and password required.';return;}msg.textContent='';
+  const {ok,data}=await sbFetch('cipher_users',{method:'POST',body:JSON.stringify({username:un,password:pw,role})});
+  if(ok){msg.className='add-msg-ok';msg.textContent='User "'+un+'" added.';document.getElementById('new-un').value='';document.getElementById('new-pw').value='';document.getElementById('new-role').value='user';loadUsers();}
+  else{msg.className='add-msg-err';msg.textContent=typeof data==='object'&&data.message?data.message:'Failed - username may already exist.';}
 }
-function factoryReset(){
-  if(!confirm('Reset ALL settings, PINs, and cipher map to defaults?'))return;
-  PINS={user:'5858',admin:'1212'};C={...DEFAULT_C};buildR();buildTable();
-  uses=0;loginAttempts=0;activityLog=[];renderLog();refreshStats();updatePinDisplay();addLog('admin','Factory reset');
+async function changeRole(id,role){await sbFetch('cipher_users?id=eq.'+id,{method:'PATCH',body:JSON.stringify({role})});loadUsers();}
+async function deleteUser(id,un){if(!confirm('Remove "'+un+'"?'))return;await sbFetch('cipher_users?id=eq.'+id,{method:'DELETE'});loadUsers();}
+
+/* ===== LEARN ENGINE ===== */
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function addXP(amount){
+  xp+=amount;
+  const xpPerLevel=100+level*50;
+  if(xp>=xpPerLevel){xp-=xpPerLevel;level++;}
+  updateXPBar();
+}
+function updateXPBar(){
+  const xpPerLevel=100+level*50;
+  document.getElementById('xp-level').textContent=level;
+  document.getElementById('xp-cur').textContent=xp;
+  document.getElementById('xp-max').textContent=xpPerLevel;
+  document.getElementById('xp-fill').style.width=Math.round(xp/xpPerLevel*100)+'%';
+}
+function updateLearnStats(){
+  document.getElementById('st-streak').textContent=streak;
+  document.getElementById('st-correct').textContent=totalCorrect;
+  document.getElementById('st-best').textContent=bestStreak;
+  const sd=document.getElementById('streak-disp');
+  if(streak>=3){sd.style.display='flex';document.getElementById('streak-num').textContent=streak;}
+  else{sd.style.display='none';}
+}
+function onCorrect(xpAmt){streak++;if(streak>bestStreak)bestStreak=streak;totalCorrect++;addXP(xpAmt);updateLearnStats();}
+function onWrong(){streak=0;updateLearnStats();}
+
+function showMenu(){
+  ['learn-menu','learn-flash','learn-quiz','learn-type','learn-rev','learn-result'].forEach(id=>{document.getElementById(id).style.display=id==='learn-menu'?'':'none';});
+  updateLearnStats();updateXPBar();
+}
+function startMode(mode){
+  lastMode=mode;
+  ['learn-menu','learn-flash','learn-quiz','learn-type','learn-rev','learn-result'].forEach(id=>{document.getElementById(id).style.display='none';});
+  if(mode==='flash'){startFlash();}
+  else if(mode==='quiz'){startQuiz();}
+  else if(mode==='type'){startType();}
+  else if(mode==='rev'){startRev();}
+}
+function retryMode(){startMode(lastMode);}
+
+/* FLASHCARDS */
+function startFlash(){
+  document.getElementById('learn-flash').style.display='';
+  fcDeck=shuffle(KEYS);fcIdx=0;fcFlipped=false;
+  document.getElementById('fc-inner').classList.remove('flipped');
+  showFlashCard();
+}
+function showFlashCard(){
+  if(fcIdx>=fcDeck.length){showMenu();return;}
+  const key=fcDeck[fcIdx];
+  document.getElementById('fc-front').textContent=C[key];
+  document.getElementById('fc-back').textContent=key;
+  document.getElementById('fc-inner').classList.remove('flipped');
+  fcFlipped=false;
+  const pct=Math.round(fcIdx/fcDeck.length*100);
+  document.getElementById('fc-bar-fill').style.width=pct+'%';
+  document.getElementById('fc-count').textContent=fcIdx+' / '+fcDeck.length;
+}
+function flipCard(){
+  if(!fcFlipped){document.getElementById('fc-inner').classList.add('flipped');fcFlipped=true;}
+}
+function rateCard(rating){
+  if(!fcFlipped)return;
+  if(rating===2){onCorrect(10);addXP(5);}
+  else if(rating===1){streak=Math.max(0,streak-1);updateLearnStats();}
+  else{onWrong();}
+  fcIdx++;showFlashCard();
 }
 
-// ── Idle ──────────────────────────────────────────────────────────────────────
-function resetIdleTimer(){clearTimeout(idleTimer);const tog=document.getElementById('tog-autolock');if(tog&&tog.checked)idleTimer=setTimeout(()=>{if(role)lockOut();},5*60*1000);}
-document.addEventListener('keydown',resetIdleTimer);document.addEventListener('click',resetIdleTimer);
-addLog('—','Page loaded');
+/* QUIZ */
+function startQuiz(){
+  document.getElementById('learn-quiz').style.display='';
+  qzQuestions=shuffle(KEYS).slice(0,10);qzIdx=0;qzScore=0;qzAnswered=false;
+  showQuizQ();
+}
+function showQuizQ(){
+  if(qzIdx>=qzQuestions.length){showResult('quiz',qzScore,10);return;}
+  const key=qzQuestions[qzIdx];
+  const code=C[key];
+  document.getElementById('qz-q').textContent=code;
+  document.getElementById('qz-fb').textContent='';
+  document.getElementById('qz-fb').style.color='';
+  document.getElementById('qz-next').style.display='none';
+  qzAnswered=false;
+  const wrongs=shuffle(KEYS.filter(k=>k!==key)).slice(0,3);
+  const opts=shuffle([key,...wrongs]);
+  const container=document.getElementById('qz-opts');container.innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('button');b.className='qopt';b.textContent=o;
+    b.onclick=()=>answerQuiz(o,key,b);container.appendChild(b);
+  });
+  const pct=Math.round(qzIdx/10*100);
+  document.getElementById('qz-bar-fill').style.width=pct+'%';
+  document.getElementById('qz-count').textContent=qzIdx+' / 10';
+}
+function answerQuiz(chosen,correct,btn){
+  if(qzAnswered)return;qzAnswered=true;
+  document.querySelectorAll('.qopt').forEach(b=>{b.disabled=true;if(b.textContent===correct)b.classList.add('correct');});
+  const fb=document.getElementById('qz-fb');
+  if(chosen===correct){btn.classList.add('correct');fb.textContent='Correct! +15 XP';fb.style.color='#4ade80';qzScore++;onCorrect(15);}
+  else{btn.classList.add('wrong');fb.textContent='Wrong - it was '+correct;fb.style.color='#f87171';onWrong();}
+  document.getElementById('qz-next').style.display='';
+  qzIdx++;
+}
+function nextQuiz(){showQuizQ();}
+
+/* TYPE MODE (code → letter) */
+function startType(){
+  document.getElementById('learn-type').style.display='';
+  tpQuestions=shuffle(KEYS).slice(0,10);tpIdx=0;tpScore=0;
+  showTypeQ();
+}
+function showTypeQ(){
+  if(tpIdx>=tpQuestions.length){showResult('type',tpScore,10);return;}
+  const key=tpQuestions[tpIdx];
+  document.getElementById('tp-q').textContent=C[key];
+  document.getElementById('tp-inp').value='';document.getElementById('tp-inp').className='type-input';
+  document.getElementById('tp-fb').textContent='';document.getElementById('tp-fb').style.color='';
+  document.getElementById('tp-hint-btn').style.display='';document.getElementById('tp-inp').focus();
+  const pct=Math.round(tpIdx/10*100);
+  document.getElementById('tp-bar-fill').style.width=pct+'%';document.getElementById('tp-count').textContent=tpIdx+' / 10';
+}
+function checkType(){
+  const key=tpQuestions[tpIdx];
+  const ans=document.getElementById('tp-inp').value.trim().toUpperCase();
+  const inp=document.getElementById('tp-inp');const fb=document.getElementById('tp-fb');
+  if(!ans)return;
+  if(ans===key){inp.className='type-input correct';fb.textContent='Correct! +20 XP';fb.style.color='#4ade80';tpScore++;onCorrect(20);tpIdx++;setTimeout(showTypeQ,700);}
+  else{inp.className='type-input wrong';fb.textContent='Not quite - try again!';fb.style.color='#f87171';onWrong();setTimeout(()=>{inp.className='type-input';inp.value='';fb.textContent='';},600);}
+}
+function showTypeHint(){
+  const key=tpQuestions[tpIdx];
+  document.getElementById('tp-fb').textContent='Hint: it starts with "'+key[0]+'"';
+  document.getElementById('tp-fb').style.color='#fbbf24';
+  document.getElementById('tp-hint-btn').style.display='none';
+}
+
+/* REVERSE MODE (letter → code) */
+function startRev(){
+  document.getElementById('learn-rev').style.display='';
+  rvQuestions=shuffle(KEYS).slice(0,10);rvIdx=0;rvScore=0;
+  showRevQ();
+}
+function showRevQ(){
+  if(rvIdx>=rvQuestions.length){showResult('rev',rvScore,10);return;}
+  const key=rvQuestions[rvIdx];
+  document.getElementById('rv-q').textContent=key;
+  document.getElementById('rv-inp').value='';document.getElementById('rv-inp').className='type-input';
+  document.getElementById('rv-fb').textContent='';document.getElementById('rv-fb').style.color='';
+  document.getElementById('rv-hint-btn').style.display='';document.getElementById('rv-inp').focus();
+  const pct=Math.round(rvIdx/10*100);
+  document.getElementById('rv-bar-fill').style.width=pct+'%';document.getElementById('rv-count').textContent=rvIdx+' / 10';
+}
+function checkRev(){
+  const key=rvQuestions[rvIdx];const correct=C[key];
+  const ans=document.getElementById('rv-inp').value.trim().toUpperCase();
+  const inp=document.getElementById('rv-inp');const fb=document.getElementById('rv-fb');
+  if(!ans)return;
+  if(ans===correct){inp.className='type-input correct';fb.textContent='Correct! +25 XP';fb.style.color='#4ade80';rvScore++;onCorrect(25);rvIdx++;setTimeout(showRevQ,700);}
+  else{inp.className='type-input wrong';fb.textContent='The code is: '+correct;fb.style.color='#f87171';onWrong();setTimeout(()=>{inp.className='type-input';inp.value='';fb.textContent='';},900);}
+}
+function showRevHint(){
+  const key=rvQuestions[rvIdx];const code=C[key];
+  document.getElementById('rv-fb').textContent='Hint: starts with "'+code.substring(0,2)+'"';
+  document.getElementById('rv-fb').style.color='#fbbf24';
+  document.getElementById('rv-hint-btn').style.display='none';
+}
+
+/* RESULTS */
+function showResult(mode,score,total){
+  ['learn-flash','learn-quiz','learn-type','learn-rev'].forEach(id=>{document.getElementById(id).style.display='none';});
+  document.getElementById('learn-result').style.display='';
+  document.getElementById('res-score').textContent=score+'/'+total;
+  const pct=Math.round(score/total*100);
+  let msg,detail;
+  if(pct===100){msg='Perfect score!';detail='Incredible - you got every single one right!';addXP(50);}
+  else if(pct>=80){msg='Great job!';detail='You\'re getting really good at this cipher.';addXP(25);}
+  else if(pct>=60){msg='Good effort!';detail='Keep practising - you\'re almost there.';addXP(10);}
+  else{msg='Keep going!';detail='Every attempt makes you better. Try again!';}
+  document.getElementById('res-msg').textContent=msg;
+  document.getElementById('res-detail').textContent=detail+'\nCurrent streak: '+streak+' | XP earned this session: '+xp;
+  updateLearnStats();updateXPBar();
+}
 </script>
-</body>
-</html>
+
